@@ -5,7 +5,7 @@ import banner3 from '../../../assets/Images/Hassle-free properties_icon3.svg'
 
 const Banners = () => {
   return (
-    <div className=" mt-20 mx-auto w-10/12 " >
+    <div className=" my-20 mx-auto w-10/12 " >
         <h1 className='text-4xl font-bold text-center text-[#0D2A6E]' >Hassle-free <span className='text-[#8F53AA]' >properties search</span></h1>
     
         <div className='grid grid-cols-3 mt-10 ' >
