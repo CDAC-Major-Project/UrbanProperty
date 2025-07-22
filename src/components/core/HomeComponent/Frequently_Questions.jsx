@@ -1,4 +1,4 @@
-import FAQ from "../../assets/Images/FAQ.png"
+import FAQ from "../../../assets/Images/FAQ.png";
 import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
@@ -13,7 +13,7 @@ const Frequently_Questions = () => {
     const [toggleIcon, setToggleIcon] = useState("");
 
   return (
-    <div className='w-11/12 mx-auto space-y-10 mt-20 ' >
+    <div className='w-11/12 mx-auto space-y-10 my-20 ' >
         <h1 className='text-3xl font-bold text-[#253F7C]' >Frequently Asked Questions</h1>
         <div className='flex gap-8' >
             <img src={FAQ}/>

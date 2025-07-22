@@ -1,9 +1,8 @@
-import React from "react";
-import Residential from "../../assets/logos/key.svg"
-import Commercial from "../../assets/logos/apartment.svg"
-import Agricultural from "../../assets/logos/planting.svg";
-import Industrial from "../../assets/logos/factory.svg";
-import Other from "../../assets/logos/other-black.svg";
+import Residential from "../../../assets/logos/key.svg";
+import Commercial from "../../../assets/logos/apartment.svg"
+import Agricultural from "../../../assets/logos/planting.svg";
+import Industrial from "../../../assets/logos/factory.svg";
+import Other from "../../../assets/logos/other-black.svg";
 
 const Auction_Available = () => {
   return (

@@ -1,9 +1,8 @@
-import React from "react";
-import Agriculture from "../../assets/Images/Agricultural.png";
-import Industrial from "../../assets/Images/industrial.png";
-import Other from "../../assets/Images/Other.png";
-import Property from "../../assets/Images/Property1.png";
-import Banner from "../../assets/Images/banner2.png";
+import Property from "../../../assets/Images/Property1.png"
+import Banner from "../../../assets/Images/banner2.png"
+import Agriculture from "../../../assets/Images/Agricultural.png"
+import Industrial from "../../../assets/Images/industrial.png"
+import Other from "../../../assets/Images/Other.png"
 
 const Property_Available = () => {
   return (
