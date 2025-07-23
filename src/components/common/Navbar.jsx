@@ -25,8 +25,8 @@ const Navbar = () => {
 
         {/* buttons */}
         <div className=' flex flex-row gap-5 items-center' >
-            <button onClick={() => navigate("/login")} className=' cursor-pointer bg-black text-sm font-semibold text-white px-7 py-2 rounded-full'>Login</button>
-            <button className=' cursor-pointer bg-[#00BCFF] text-sm font-semibold text-white px-4 py-2 rounded-full'>Sign Up</button>
+            <button onClick={() => navigate("/login")} className=' cursor-pointer bg-black hover:bg-gray-700 text-sm font-semibold text-white px-7 py-2 rounded-full'>Login</button>
+            <button onClick={() => navigate("/signup")} className=' cursor-pointer bg-[#00BCFF] hover:bg-[#0099CC] text-sm font-semibold text-white px-4 py-2 rounded-full'>Sign Up</button>
         </div>
     </div>
   )
