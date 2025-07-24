@@ -20,6 +20,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/dashboard/seller" element={<Dashboard />} />
+        <Route path="/dashboard/buyer" element={<Dashboard />} />
       </Routes>
       {
         (path === "/login"||path === "/signup") ? null : <Footer /> // Hide Footer on Login and SignUp pages
