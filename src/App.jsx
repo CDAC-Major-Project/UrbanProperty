@@ -6,6 +6,7 @@ import Footer from "./components/common/Footer";
 import Login from "./Pages/Login";
 import SignUp from "./Pages/SignUp";
 import Dashboard from "./Pages/Dashboard";
+import ListProperty from "./Pages/ListProperty";
 
 function App() {
   const path = useLocation().pathname;
@@ -21,6 +22,7 @@ function App() {
         <Route path="/signup" element={<SignUp />} />
         <Route path="/dashboard/seller" element={<Dashboard />} />
         <Route path="/dashboard/buyer" element={<Dashboard />} />
+        <Route path="/seller/list-property" element={<ListProperty />} />
       </Routes>
       {
         (path === "/login"||path === "/signup") ? null : <Footer /> // Hide Footer on Login and SignUp pages
