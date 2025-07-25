@@ -1,4 +1,4 @@
-
+import React from "react";
 import HeroSection from "../components/core/HomeComponent/HeroSection";
 import Tech_Purpose from "../components/core/HomeComponent/Tech_Purpose";
 import Banners from "../components/core/HomeComponent/Banners";

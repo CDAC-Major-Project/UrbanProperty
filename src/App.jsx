@@ -8,6 +8,7 @@ import SignUp from "./Pages/SignUp";
 import Dashboard from "./Pages/Dashboard";
 import ListProperty from "./Pages/ListProperty";
 import UserProfile from "./Pages/UserProfile";
+import React from "react";
 
 function App() {
   const path = useLocation().pathname;

@@ -1,1 +1,5 @@
 @import "tailwindcss";
+
+#rounded:{
+    border-radius: 100%;
+}

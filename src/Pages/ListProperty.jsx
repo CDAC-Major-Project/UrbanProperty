@@ -50,7 +50,7 @@ const ListProperty = () => {
   
 
   return (
-    <div className="min-h-screen bg-[#F9FAFB] border ">
+    <div className="min-h-screen bg-[#F9FAFB] ">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 border border-red-500 ">
         <div className=" mt-40 mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
@@ -177,19 +177,18 @@ const ListProperty = () => {
                 Drag and drop your photos here, or click to browse
               </p>
               <p className="text-sm text-gray-500">PNG, JPG up to 10MB each, Max 4 photo</p>
-              <button
-                type="button"
-                variant="outline" 
-                className=" cursor-pointer border outline-none p-2 rounded-full border-dashed "
+              <div
+                className=" w-fit mx-auto cursor-pointer border border-dashed border-black outline-none p-3 bg-gray-300  rounded-full "
                >
                 <CloudUploadIcon/>
-              </button>
+              </div>
             </div>
           </div>
 
           <button
             type="button"
-            className=" cursor-pointer w-full py-2 text-white font-semibold rounded-xl bg-gradient-to-r from-black to-black hover:from-gray-900 hover:to-gray-900 shadow-md hover:shadow-lg transition-all duration-200"
+            
+            className=" cursor-pointer w-full py-2 text-white font-semibold bg-gradient-to-r from-black to-black hover:from-gray-900 hover:to-gray-900 shadow-md hover:shadow-lg transition-all duration-200"
           >
             Add Property
           </button>
