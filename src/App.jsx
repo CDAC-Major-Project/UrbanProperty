@@ -6,6 +6,7 @@ import Footer from "./components/common/Footer";
 import Login from "./Pages/Login";
 import SignUp from "./Pages/SignUp";
 import Dashboard from "./Pages/Dashboard";
+import ListProperty from "./Pages/ListProperty";
 import UserProfile from "./Pages/UserProfile";
 
 function App() {
@@ -22,6 +23,7 @@ function App() {
         <Route path="/signup" element={<SignUp />} />
         <Route path="/dashboard/seller" element={<Dashboard />} />
         <Route path="/dashboard/buyer" element={<Dashboard />} />
+        <Route path="/seller/list-property" element={<ListProperty />} />
         <Route path="/dashboard/userprofile" element={<UserProfile />} />
       </Routes>
       {
