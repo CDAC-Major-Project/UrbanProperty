@@ -6,6 +6,7 @@ import Typography from '@mui/material/Typography';
 import ControlPointIcon from '@mui/icons-material/ControlPoint';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import { useState } from 'react';
+import React from "react";
 
 const Frequently_Questions = () => {
 

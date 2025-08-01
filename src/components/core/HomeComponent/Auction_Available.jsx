@@ -3,6 +3,7 @@ import Commercial from "../../../assets/logos/apartment.svg"
 import Agricultural from "../../../assets/logos/planting.svg";
 import Industrial from "../../../assets/logos/factory.svg";
 import Other from "../../../assets/logos/other-black.svg";
+import React from "react";
 
 const Auction_Available = () => {
   return (

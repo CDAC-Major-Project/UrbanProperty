@@ -3,8 +3,8 @@ import ModeEditOutlineIcon from "@mui/icons-material/ModeEditOutline";
 import AddIcon from "@mui/icons-material/Add";
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { Button, Chip } from "@mui/material";
-
-import { useLocation } from "react-router-dom";
+import React from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export default function Dashboard() {
   const myProperties = [
@@ -61,7 +61,7 @@ export default function Dashboard() {
   ];
 
   const location = useLocation().pathname;
-
+  const navigate = useNavigate();
   return (
     <div className="bg-[#F9FAFB] min-h-screen ">
       <div className="w-11/12 mx-auto mt-50  space-y-10 ">
@@ -78,6 +78,7 @@ export default function Dashboard() {
 
           {location === "/dashboard/seller" && (
             <Button
+              onClick={() => navigate("/seller/list-property")}
               variant="outlined"
               size="medium"
               className="flex gap-2 items-center bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 shadow-md hover:shadow-lg transition-all duration-200 "

@@ -1,4 +1,5 @@
 import BlackLogo from "../assets/logos/black_logo.png"
+import React from "react"
 
 const Login = () => {
   return (
@@ -6,7 +7,7 @@ const Login = () => {
         <div className=' px-10 bg-white shadow-xl w-1/3 h-3/4 rounded-4xl shadow-gray-600 flex flex-col items-center justify-center' >
             <div>
                 <img src={BlackLogo} className="w-2/3 mx-auto" />
-                <h1 className="font-bold text-[#253F7C] text-3xl " >Welcome to UrbanBid</h1>
+                <h1 className="font-bold text-[#253F7C] text-3xl text-nowrap " >Welcome to UrbanBid</h1>
             </div>
 
             <div className="mt-4">

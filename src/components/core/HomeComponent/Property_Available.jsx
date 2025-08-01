@@ -3,6 +3,7 @@ import Banner from "../../../assets/Images/banner2.png"
 import Agriculture from "../../../assets/Images/Agricultural.png"
 import Industrial from "../../../assets/Images/industrial.png"
 import Other from "../../../assets/Images/Other.png"
+import React from "react"
 
 const Property_Available = () => {
   return (

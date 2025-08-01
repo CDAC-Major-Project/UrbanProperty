@@ -1,8 +1,11 @@
 import { useState } from "react";
 import SighupPhoto from "../assets/Images/signup.jpg";
+import React from "react";
+import { useNavigate } from "react-router-dom";
 
 const SignUp = () => {
   const [userType, setUserType] = useState("buyer");
+  const navigate = useNavigate();
 
   return (
     <div className="w-screen h-screen bg-[#2D3285] ">
@@ -102,6 +105,7 @@ const SignUp = () => {
             </div>
 
             <button
+                onClick={() => navigate("/dashboard/seller")}
                 type="button"
                 className="bg-black font-semibold text-white cursor-pointer px-4 py-2 rounded-lg"
             >Create Account</button>

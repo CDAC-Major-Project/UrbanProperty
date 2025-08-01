@@ -2,7 +2,7 @@ import Image1 from "../../../assets/Images/banner1.png";
 import Image2 from "../../../assets/Images/banner2.png";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { TypeAnimation } from "react-type-animation";
-
+import React from "react";
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";

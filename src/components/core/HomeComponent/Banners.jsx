@@ -1,7 +1,7 @@
 import banner1 from "../../../assets/Images/Hassle-free properties_icon1.svg";
 import banner2 from '../../../assets/Images/Hassle-free properties_icon2.svg'
 import banner3 from '../../../assets/Images/Hassle-free properties_icon3.svg'
-
+import React from "react";
 
 const Banners = () => {
   return (
