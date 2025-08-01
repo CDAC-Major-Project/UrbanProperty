@@ -47,24 +47,30 @@ const ListProperty = () => {
 
   const photoRef = React.useRef(null);
   const [propertyImages, setPropertyImages] = React.useState([]);
-  
+  const [previewImages, setPreviewImages] = React.useState([]);
+  console.log("previewImages : ", previewImages)
   console.log("images -> ", propertyImages)
   
 
   const previewImage = (e) => {
-    if(e.target.files && e.target.files[0]){
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        setPropertyImages(event.target.result);
-      }
+    if(e.target.files){
+      [...e.target.files].forEach((file) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = (event) => {
+          setPreviewImages((prev) => [...prev, event.target.result]);
+        }
+
+      })
     }
   }
 
   const imageHandler = (e) => {
-    console.log("files : ", e.target.files)
-    if(e.target.files){
-      setPropertyImages([...propertyImages, { key: propertyImages.length, image:e.target.files[0]}]);
-      previewImage(e);
+    if(e?.target?.files){
+      [...e.target.files].forEach((file) => {
+        setPropertyImages( (prev) =>  [...prev, { key: prev.length+1, image:file}])
+    })
+    previewImage(e)
     }
   }
 
@@ -180,16 +186,31 @@ const ListProperty = () => {
           </div>
 
           {/* image */}
-          <div>
-            <img src={propertyImages[0]?.image} />
+          <div className="space-y-6"> 
+            {
+              previewImages?.length > 0 && 
+              <div>
+                <h3 className="text-medium text-black font-semibold" >Selected Images</h3>
+                <div className={" grid grid-cols-4 gap-5 "} >
+                  {
+                    previewImages?.map((image, idx) => (
+                      <img key={idx} src={image} className="object-cover rounded-2xl h-[10rem]" />
+                    ))
+                  }
+                </div>
+              </div>
+            }
             <input
                 type="file"
                 accept="image/*"
                 ref={photoRef}
+                multiple
                 className="hidden"
                 onChange={(event) => imageHandler(event)}
             />
-            <div 
+            {
+              propertyImages?.length < 4 &&
+              <div 
                 className=" cursor-pointer border-2 border-dashed border-gray-300 rounded-lg p-8  space-y-2 text-center"
                 onClick={() => photoRef.current && photoRef.current.click() }
             >
@@ -197,13 +218,14 @@ const ListProperty = () => {
               <p className="text-gray-600">
                 Drag and drop your photos here, or click to browse
               </p>
-              <p className="text-sm text-gray-500">PNG, JPG up to 10MB each, Max 4 photo</p>
+              <p className="text-sm text-gray-500">PNG, JPG up to 10MB each, Max {4 - previewImages?.length} photo</p>
               <div
                 className=" w-fit mx-auto cursor-pointer border border-dashed border-black outline-none p-3 bg-gray-300  rounded-full "
                >
                 <CloudUploadIcon/>
               </div>
-            </div>
+              </div>
+            }
           </div>
 
           <button
