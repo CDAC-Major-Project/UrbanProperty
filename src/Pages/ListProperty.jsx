@@ -46,12 +46,31 @@ const ListProperty = () => {
   ];
 
   const photoRef = React.useRef(null);
-  const [propertyImage, setPropertyImage] = React.useState(null);
+  const [propertyImages, setPropertyImages] = React.useState([]);
+  
+  console.log("images -> ", propertyImages)
   
 
+  const previewImage = (e) => {
+    if(e.target.files && e.target.files[0]){
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        setPropertyImages(event.target.result);
+      }
+    }
+  }
+
+  const imageHandler = (e) => {
+    console.log("files : ", e.target.files)
+    if(e.target.files){
+      setPropertyImages([...propertyImages, { key: propertyImages.length, image:e.target.files[0]}]);
+      previewImage(e);
+    }
+  }
+
   return (
-    <div className="min-h-screen bg-[#F9FAFB] ">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 border border-red-500 ">
+    <div className="min-h-screen bg-[#F9FAFB]">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className=" mt-40 mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
             List New Property
@@ -162,11 +181,13 @@ const ListProperty = () => {
 
           {/* image */}
           <div>
+            <img src={propertyImages[0]?.image} />
             <input
                 type="file"
+                accept="image/*"
                 ref={photoRef}
                 className="hidden"
-                onChange={(event) => setPropertyImage(event.target.value)}
+                onChange={(event) => imageHandler(event)}
             />
             <div 
                 className=" cursor-pointer border-2 border-dashed border-gray-300 rounded-lg p-8  space-y-2 text-center"
@@ -187,7 +208,7 @@ const ListProperty = () => {
 
           <button
             type="button"
-            
+
             className=" cursor-pointer w-full py-2 text-white font-semibold bg-gradient-to-r from-black to-black hover:from-gray-900 hover:to-gray-900 shadow-md hover:shadow-lg transition-all duration-200"
           >
             Add Property
