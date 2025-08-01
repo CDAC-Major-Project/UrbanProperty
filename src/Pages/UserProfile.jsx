@@ -108,6 +108,57 @@ const UserProfile = () => {
               onChange={handleChange}
             />
           </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Phone Number
+            </label>
+            <input
+              type="text"
+              name="phone"
+              className="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              value={userData.phone}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Role
+            </label>
+            <select
+              name="role"
+              value={userData.role}
+              onChange={handleChange}
+              className="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+            >
+              <option value="Administrator">Administrator</option>
+              <option value="Buyer">Buyer</option>
+              <option value="Seller">Seller</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Password
+            </label>
+            <input
+              type="password"
+              name="password"
+              className="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              value={userData.password}
+              onChange={handleChange}
+            />
+          </div>
+        </div>
+
+        <div className="flex justify-end mt-6">
+          <button
+            className="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition flex items-center gap-2"
+            onClick={handleSave}
+          >
+            <i className="bi bi-save"></i> Save
+          </button>
         </div>
 
         <div className="flex justify-end mt-6">
