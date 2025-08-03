@@ -16,6 +16,7 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import PlaceOutlinedIcon from '@mui/icons-material/PlaceOutlined';
 import Button from '@mui/material/Button';
+import {useDebounce} from "use-debounce";
 
 
 const BrowseAllProperties = () => {
@@ -164,9 +165,22 @@ const BrowseAllProperties = () => {
 ]
 
   const [filterPropertyType, setFilterPropertyType] = React.useState("");
+  const [filterPropertyByName, setFilterPropertyByName] = React.useState("");
+
+  const [debouncedFilterPropertyByName] = useDebounce(filterPropertyByName, 500)
 
   const [displayProperties, setDisplayProperties] = React.useState(properties);
 
+
+  // filter properties based on name
+  React.useEffect(() => {
+    if(debouncedFilterPropertyByName === ""){
+      setDisplayProperties(properties);
+    }else{
+      const filteredProperties = properties?.filter((property) => ( property?.title.toLowerCase().includes(debouncedFilterPropertyByName.toLowerCase()) ))
+      setDisplayProperties(filteredProperties);
+    }
+  }, [debouncedFilterPropertyByName])
 
   // filter properties based on type
   React.useEffect(() => {
@@ -189,6 +203,7 @@ const BrowseAllProperties = () => {
             <SearchIcon sx={{ color: "#303087" }} />
             <input
               type="text"
+              onChange={(e) => setFilterPropertyByName(e.target.value)}
               placeholder="Search properties..."
               className="outline-none text-gray-700 w-full "
             />
