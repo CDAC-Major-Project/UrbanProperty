@@ -10,7 +10,7 @@ const UserProfile = () => {
     password: "********",
   });
 
-  const handleChange = (e) => {
+  const handleChange = () => {
   
   };
 
