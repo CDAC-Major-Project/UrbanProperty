@@ -9,18 +9,21 @@ import Picture4 from "../assets/Images/banner2.png"
 import Picture5 from "../assets/Images/industrial.png"
 import Picture6 from "../assets/Images/Other.png"
 import Picture7 from "../assets/Images/Property1.png"
-import AirlineSeatFlatIcon from '@mui/icons-material/AirlineSeatFlat';
-import BathtubIcon from '@mui/icons-material/Bathtub';
-import CropSquareIcon from '@mui/icons-material/CropSquare';
+import LocalHotelOutlinedIcon from '@mui/icons-material/LocalHotelOutlined';
+import BathtubOutlinedIcon from '@mui/icons-material/BathtubOutlined';
+import MapOutlinedIcon from '@mui/icons-material/MapOutlined';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import PlaceOutlinedIcon from '@mui/icons-material/PlaceOutlined';
+import Button from '@mui/material/Button';
+
 
 const BrowseAllProperties = () => {
 
   const properties = [
   {
     "title": "Modern Villa with Pool",
-    "price": "$2,500,000",
+    "price": "₹2,500,000",
     "location": "Beverly Hills, CA",
     "beds": 5,
     "baths": 4,
@@ -29,11 +32,12 @@ const BrowseAllProperties = () => {
       "view_details": true,
       "contact": true
     },
-    photo:Picture1
+    photo:Picture1,
+    "property_type": "residential"
   },
   {
     "title": "Luxury Apartment Downtown",
-    "price": "$1,750,000",
+    "price": "₹1,750,000",
     "location": "Los Angeles, CA",
     "beds": 3,
     "baths": 2,
@@ -42,11 +46,12 @@ const BrowseAllProperties = () => {
       "view_details": true,
       "contact": true
     },
-    photo:Picture2
+    photo:Picture2,
+    "property_type": "residential"
   },
   {
     "title": "Cozy Cottage Retreat",
-    "price": "$950,000",
+    "price": "₹950,000",
     "location": "Napa Valley, CA",
     "beds": 2,
     "baths": 2,
@@ -55,11 +60,12 @@ const BrowseAllProperties = () => {
       "view_details": true,
       "contact": true
     },
-    photo:Picture3
+    photo:Picture3,
+    "property_type": "agricultural"
   },
   {
     "title": "Beachfront Mansion",
-    "price": "$4,900,000",
+    "price": "₹4,900,000",
     "location": "Malibu, CA",
     "beds": 6,
     "baths": 5,
@@ -68,11 +74,12 @@ const BrowseAllProperties = () => {
       "view_details": true,
       "contact": true
     },
-    photo:Picture4
+    photo:Picture4,
+    "property_type": "agricultural"
   },
   {
     "title": "Urban Penthouse Suite",
-    "price": "$3,200,000",
+    "price": "₹3,200,000",
     "location": "New York, NY",
     "beds": 4,
     "baths": 3,
@@ -81,11 +88,12 @@ const BrowseAllProperties = () => {
       "view_details": true,
       "contact": true
     },
-    photo:Picture5
+    photo:Picture5,
+    "property_type": "commercial"
   },
   {
     "title": "Suburban Family Home",
-    "price": "$1,150,000",
+    "price": "₹1,150,000",
     "location": "Austin, TX",
     "beds": 4,
     "baths": 3,
@@ -94,11 +102,12 @@ const BrowseAllProperties = () => {
       "view_details": true,
       "contact": true
     },
-    photo:Picture6
+    photo:Picture6,
+    "property_type": "industrial"
   },
   {
     "title": "Golf Course Villa",
-    "price": "$2,100,000",
+    "price": "₹2,100,000",
     "location": "Scottsdale, AZ",
     "beds": 5,
     "baths": 4,
@@ -107,11 +116,12 @@ const BrowseAllProperties = () => {
       "view_details": true,
       "contact": true
     },
-    photo:Picture7
+    photo:Picture7,
+    "property_type": "residential"
   },
   {
     "title": "Lake House Escape",
-    "price": "$1,650,000",
+    "price": "₹1,650,000",
     "location": "Lake Tahoe, NV",
     "beds": 3,
     "baths": 2,
@@ -120,11 +130,12 @@ const BrowseAllProperties = () => {
       "view_details": true,
       "contact": true
     },
-    photo:Picture1
+    photo:Picture1,
+    "property_type": "agricultural"
   },
   {
     "title": "Mountain View Chalet",
-    "price": "$2,700,000",
+    "price": "₹2,700,000",
     "location": "Aspen, CO",
     "beds": 4,
     "baths": 3,
@@ -133,11 +144,12 @@ const BrowseAllProperties = () => {
       "view_details": true,
       "contact": true
     },
-    photo:Picture2
+    photo:Picture2,
+    "property_type": "commercial"
   },
   {
     "title": "Eco-Friendly Smart Home",
-    "price": "$1,300,000",
+    "price": "₹1,300,000",
     "location": "Portland, OR",
     "beds": 3,
     "baths": 3,
@@ -146,10 +158,25 @@ const BrowseAllProperties = () => {
       "view_details": true,
       "contact": true
     },
-    photo:Picture3
+    photo:Picture3,
+    "property_type": "industrial"
   }
 ]
 
+  const [filterPropertyType, setFilterPropertyType] = React.useState("");
+
+  const [displayProperties, setDisplayProperties] = React.useState(properties);
+
+
+  // filter properties based on type
+  React.useEffect(() => {
+    if(filterPropertyType === ""){
+      setDisplayProperties(properties);
+    }else{
+      const filteredProperties = properties?.filter((property) => ( property?.property_type === filterPropertyType ))
+      setDisplayProperties(filteredProperties);
+    }
+  }, [filterPropertyType])
   
 
   return (
@@ -169,8 +196,8 @@ const BrowseAllProperties = () => {
 
           <div className="flex w-1/2 space-x-4 ">
               <Select
-                value={""}
-                onChange={""}
+                value={filterPropertyType}
+                onChange={(e) => setFilterPropertyType(e.target.value)}
                 displayEmpty
                 inputProps={{ "aria-label": "Without label" }}
                 sx={{
@@ -208,10 +235,10 @@ const BrowseAllProperties = () => {
         </div>
 
         {/* property cards */}
-        <div className=" min-h-screen grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 " >
+        <div className=" min-h-screen grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6 " >
                 {
-                  properties?.map((property, index) => (
-                  <div key={index} className=" relative border border-gray-400 rounded-2xl hover:shadow-2xl " >
+                  displayProperties?.map((property, index) => (
+                  <div key={index} className=" h-fit relative border border-gray-400 rounded-2xl hover:shadow-2xl " >
                   
                     {/* like */}
                     <div className="absolute top-2 right-2 bg-white z-50 rounded-md px-2.5 py-1.5 flex items-center justify-center cursor-pointer" >
@@ -224,25 +251,31 @@ const BrowseAllProperties = () => {
                     </div>
                     
                     {/* property details */}
-                    <div>
-                      <h2>{property?.title}</h2>
-                      <h3>{property?.price}</h3>
-                      <p>{property?.location}</p>
-                      <div>
-                        <div>
-                          <AirlineSeatFlatIcon />
+                    <div className="p-4 space-y-1 ">
+                      <h2 className="font-semibold text-lg " >{property?.title}</h2>
+                      <h3 className="font-semibold text-xl text-[#303087]" >{property?.price}</h3>
+                      <p className="text-[#5b626b] flex items-center gap-1 -ml-1 " > <PlaceOutlinedIcon fontSize="small" /> {property?.location}</p>
+                      <div className="grid grid-cols-3" >
+                        <div className="text-nowrap flex items-center gap-1" >
+                          <LocalHotelOutlinedIcon />
                           <span>{property?.beds} Beds</span>
                         </div>
-                        <div>
-                          <BathtubIcon />
+                        <div className="text-nowrap flex items-center gap-1" >
+                          <BathtubOutlinedIcon />
                           <span>{property?.baths} Baths</span>
                         </div>
-                        <div>
-                          <CropSquareIcon/>
+                        <div className="text-nowrap flex items-center gap-1" >
+                          <MapOutlinedIcon/>
                           <span>{property?.area_sqft} sqft</span>
                         </div>
                       </div>
-                      <button></button>
+
+                      {/* button */}
+                      <div className="mt-8" >
+                        <Button variant="contained" sx={{ bgcolor:"#000000", "&:hover": { bgcolor: "#1B1B1B" }}} className="w-full"  >
+                          <span className="font-semibold" >View Details</span>
+                        </Button>
+                      </div>
                     </div>
                   </div>
                   ))
