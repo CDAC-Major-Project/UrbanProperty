@@ -10,7 +10,7 @@ const ListProperty = () => {
   const propertyTypeOptions = [
     "Residential",
     "Commercial",
-    "Agricultural",
+    // "Agricultural",
     "Industrial",
   ];
 
