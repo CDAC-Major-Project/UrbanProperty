@@ -12,6 +12,11 @@ import {
   Cell,
   Pie,
   PieChart,
+  Area,
+  AreaChart,
+  Brush,
+  Line,
+  LineChart,
 } from "recharts";
 import PeopleAltOutlinedIcon from "@mui/icons-material/PeopleAltOutlined";
 import CorporateFareOutlinedIcon from "@mui/icons-material/CorporateFareOutlined";
@@ -19,8 +24,9 @@ import ErrorOutlineOutlinedIcon from "@mui/icons-material/ErrorOutlineOutlined";
 import CountUp from "react-countup";
 import TaskAltOutlinedIcon from "@mui/icons-material/TaskAltOutlined";
 import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined";
-import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
-import ManageAccountsOutlinedIcon from '@mui/icons-material/ManageAccountsOutlined';
+import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
+import ManageAccountsOutlinedIcon from "@mui/icons-material/ManageAccountsOutlined";
+import { list } from "postcss";
 
 const Analytics = () => {
   const response = {
@@ -108,6 +114,57 @@ const Analytics = () => {
 
   const PieColors = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
 
+  const lineChart = [
+    {
+      month: "JAN",
+      listing: 150,
+    },
+    {
+      month: "FEB",
+      listing: 165,
+    },
+    {
+      month: "MAR",
+      listing: 180,
+    },
+    {
+      month: "APR",
+      listing: 210,
+    },
+    {
+      month: "MAY",
+      listing: 200,
+    },
+    {
+      month: "JUN",
+      listing: 225,
+    },
+    {
+      month: "JUL",
+      listing: 240,
+    },
+    {
+      month: "AUG",
+      listing: 230,
+    },
+    {
+      month: "SEP",
+      listing: 255,
+    },
+    {
+      month: "OCT",
+      listing: 270,
+    },
+    {
+      month: "NOV",
+      listing: 265,
+    },
+    {
+      month: "DEC",
+      listing: 300,
+    },
+  ];
+
   return (
     <div className="space-y-10 my-10 ">
       {/* Header Cards */}
@@ -134,6 +191,7 @@ const Analytics = () => {
               sx={{ color: "#4a5565" }}
             />
           </div>
+
           {/* total Listings */}
           <p className="text-4xl font-extrabold text-[#2E3192] ">
             <CountUp duration={5} end={3546} />
@@ -238,6 +296,7 @@ const Analytics = () => {
           </div>
         </div>
 
+        {/* Quick Links */}
         <div className="w-1/2 space-y-5 ">
           {/* Verify Property Link */}
           <div className="border-2 border-gray-300 bg-white rounded-2xl shadow-gray-300 shadow-lg p-5 w-full flex items-center justify-between ">
@@ -261,10 +320,15 @@ const Analytics = () => {
           <div className="border-2 border-gray-300 bg-white rounded-2xl shadow-gray-300 shadow-lg p-5 w-full flex items-center justify-between ">
             {/* Icon and Heading */}
             <div className="flex items-center space-x-3">
-              <CorporateFareOutlinedIcon sx={{ color: "#155DFC" }} fontSize="large" />
+              <CorporateFareOutlinedIcon
+                sx={{ color: "#155DFC" }}
+                fontSize="large"
+              />
               <div>
                 <h3 className="font-semibold">Property Type</h3>
-                <p className="text-sm text-gray-600">Manage property categories</p>
+                <p className="text-sm text-gray-600">
+                  Manage property categories
+                </p>
               </div>
             </div>
 
@@ -279,7 +343,10 @@ const Analytics = () => {
           <div className="border-2 border-gray-300 bg-white rounded-2xl shadow-gray-300 shadow-lg p-5 w-full flex items-center justify-between ">
             {/* Icon and Heading */}
             <div className="flex items-center space-x-3">
-              <PeopleAltOutlinedIcon sx={{ color: "#9810FA" }} fontSize="large" />
+              <PeopleAltOutlinedIcon
+                sx={{ color: "#9810FA" }}
+                fontSize="large"
+              />
               <div>
                 <h3 className="font-semibold">User Management</h3>
                 <p className="text-sm text-gray-600">1,234 total users</p>
@@ -293,6 +360,43 @@ const Analytics = () => {
             </button>
           </div>
         </div>
+      </div>
+
+      {/* Property Listing Line Chart */}
+      <div className="border-2 border-gray-300 bg-white rounded-2xl shadow-gray-300 shadow-lg p-5">
+        <h3 className="text-lg font-medium ">Property Listings Trend</h3>
+        <p className="text-sm text-gray-600">
+          Monthly property listings over time
+        </p>
+
+        <ResponsiveContainer width="100%" height={300}>
+          <LineChart
+            data={lineChart}
+            margin={{
+              top: 20,
+              right: 30,
+              left: 20,
+              bottom: 5,
+            }}
+          >
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="month" />
+            <YAxis />
+            <Tooltip />
+            <Legend />
+            <Line
+              type="monotone"
+              dataKey="listing"
+              stroke="#8884d8"
+              strokeWidth={4} // Increase this value for a thicker line
+              activeDot={{ r: 8 }}
+            >
+              {lineChart?.map((entry, index) => (
+                <Cell key={`cell-${index}`} fill="#82ca9d" />
+              ))}
+            </Line>
+          </LineChart>
+        </ResponsiveContainer>
       </div>
     </div>
   );
