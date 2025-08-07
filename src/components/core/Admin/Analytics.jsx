@@ -10,6 +10,11 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
+import PeopleAltOutlinedIcon from '@mui/icons-material/PeopleAltOutlined';
+import CorporateFareOutlinedIcon from '@mui/icons-material/CorporateFareOutlined';
+import ErrorOutlineOutlinedIcon from '@mui/icons-material/ErrorOutlineOutlined';
+import CountUp from 'react-countup';
+ 
 
 const Analytics = () => {
   const response = {
@@ -84,7 +89,41 @@ const Analytics = () => {
   console.log("data type  : ", Array.isArray(response?.monthlyData));
 
   return (
-    <div>
+    <div className="space-y-10 my-10 " >
+
+      {/* Header Cards */}
+      <div className="grid grid-cols-3 gap-5 " >
+        {/* Total Users */}
+        <div className=" space-y-5 border-2 border-gray-300 bg-white rounded-2xl shadow-gray-300 shadow-lg p-5 col-span-1" >
+          <div className="flex items-center justify-between" >
+            <h5 className="font-medium text-xl" >Total Users</h5>
+            <PeopleAltOutlinedIcon fontSize="large" />
+          </div>
+          {/* total count */}
+          <p className="text-4xl font-extrabold text-[#2E3192] " > <CountUp duration={5} end={response?.totalUsers} /></p>
+        </div>
+
+        {/* Active Listings */}
+        <div className="space-y-5 border-2 border-gray-300 bg-white rounded-2xl shadow-gray-300 shadow-lg p-5 col-span-1" >
+            <div className="flex items-center justify-between" >
+              <h5 className="font-medium text-xl" >Active Listings</h5>
+              <CorporateFareOutlinedIcon fontSize="large" />
+            </div>
+            {/* total Listings */}
+            <p className="text-4xl font-extrabold text-[#2E3192] " ><CountUp duration={5} end={3546} /></p>
+          </div>
+
+          {/* Pending Verifications */}
+        <div className="space-y-5 border-2 border-gray-300 bg-white rounded-2xl shadow-gray-300 shadow-lg p-5 col-span-1" >
+            <div className="flex items-center justify-between" >
+              <h5 className="font-medium text-xl" >Pending Verifications</h5>
+              <ErrorOutlineOutlinedIcon fontSize="large" />
+            </div>
+            <p className="text-4xl font-extrabold text-[#2E3192] " ><CountUp  duration={5} end={567} /></p>
+        </div>
+
+      </div>
+
       {/* bar chart */}
       <div className="border-2 border-gray-300 bg-white rounded-2xl shadow-gray-300 shadow-lg p-5">
         

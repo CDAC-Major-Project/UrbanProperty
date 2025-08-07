@@ -16,7 +16,7 @@ const AdminDashboard = () => {
             </h1>
           </div>
           <div className=" flex-1 overflow-y-auto w-full">
-            <div className="mx-auto w-11/12 border border-red-500 max-w-[1000px] min-h-[calc(100vh-73px)]" >
+            <div className="mx-auto w-11/12 max-w-[1000px] min-h-[calc(100vh-73px)]" >
               <Outlet />
             </div>
           </div>

@@ -292,7 +292,7 @@ const BrowseAllProperties = () => {
               <div className="overflow-hidden rounded-t-2xl min-w-full ">
                 <img
                   src={property.photo}
-                  className=" hover:scale-[110%] duration-150 rounded-t-2xl object-cover w-full aspect-video"
+                  className=" cursor-pointer hover:scale-[110%] duration-150 rounded-t-2xl object-cover w-full aspect-video"
                 />
               </div>
 
