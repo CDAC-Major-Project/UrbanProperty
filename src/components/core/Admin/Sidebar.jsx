@@ -40,7 +40,7 @@ const Sidebar = () => {
   const [activeItem, setActiveItem] = React.useState("Dashboard");
 
   return (
-    <div className="h-screen min-w-fit w-[330px] flex flex-col justify-between border border-red-500">
+    <div className=" h-screen min-w-fit w-[330px] flex flex-col justify-between border-r border-gray-300">
       <div className="flex flex-col gap-2 p-5 ">
         {menuItems?.map((items, index) => (
           <div

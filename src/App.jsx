@@ -11,6 +11,7 @@ import React from "react";
 import UserProfile from "./Pages/UserProfile";
 import BrowseAllProperties from "./Pages/BrowseAllProperties";
 import PropertyDetails from "./Pages/PropertyDetails";
+import Analytics from "./components/core/Admin/Analytics";
 import AdminDashboard from "./Pages/AdminDashboard";
 
 function App() {
@@ -31,7 +32,10 @@ function App() {
         <Route path="/profile" element={<UserProfile/>} />
         <Route path="/properties" element={<BrowseAllProperties />} />
         <Route path="/property/:id" element={<PropertyDetails />} />
-        <Route path="/admin" element={<AdminDashboard />} />
+        <Route element={<AdminDashboard/>} >
+          <Route path="/admin" element={<Analytics />} />
+
+        </Route>
       </Routes>
       {
         (path === "/login"||path === "/signup" || path === "/admin") ? null : <Footer /> // Hide Footer on Login and SignUp pages
