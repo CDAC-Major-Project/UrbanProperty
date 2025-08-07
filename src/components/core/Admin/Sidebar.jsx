@@ -6,17 +6,18 @@ import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import PeopleAltOutlinedIcon from "@mui/icons-material/PeopleAltOutlined";
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 import Logout from "../../common/Logout"; // Assuming you have a Logout component for confirmation dialog
+import { useNavigate } from "react-router-dom";
 
 const Sidebar = () => {
   const menuItems = [
     {
       name: "Dashboard",
-      path: "/admin/dashboard",
+      path: "/admin",
       icon: <InsertChartOutlinedIcon fontSize="small" />,
     },
     {
       name: "Property Verification",
-      path: "/admin/verification",
+      path: "/admin/property-verification",
       icon: <TaskAltOutlinedIcon fontSize="small" />,
     },
     {
@@ -39,16 +40,18 @@ const Sidebar = () => {
   const [isLogoutOpen, setIsLogoutOpen] = React.useState(false);
   const [activeItem, setActiveItem] = React.useState("Dashboard");
 
+  const navigate = useNavigate();
+
   return (
     <div className=" h-screen min-w-fit w-[330px] flex flex-col justify-between border-r border-gray-300">
       <div className="flex flex-col gap-2 p-5 ">
         {menuItems?.map((items, index) => (
           <div
             key={index}
-            className={` hover:bg-gray-100 hover:text-black flex items-center space-x-2 cursor-pointer text-[#757575] p-2 py-2 rounded-xl ${
-              activeItem === items?.name ? "bg-black text-white" : ""
+            className={` ${activeItem !== items?.name && "hover:bg-gray-100 hover:text-black"} flex items-center space-x-2 cursor-pointer text-[#757575] p-2 py-2 rounded-xl ${
+              activeItem === items?.name && "bg-black text-white"
             } `}
-            onClick={() => setActiveItem(items?.name)}
+            onClick={() => {setActiveItem(items?.name); navigate(items?.path);}}
           >
             {items.icon}
             <span className="text-sm font-semibold text-nowrap ">
