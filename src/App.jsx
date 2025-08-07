@@ -11,6 +11,7 @@ import React from "react";
 import UserProfile from "./Pages/UserProfile";
 import BrowseAllProperties from "./Pages/BrowseAllProperties";
 import PropertyDetails from "./Pages/PropertyDetails";
+import AdminDashboard from "./Pages/AdminDashboard";
 
 function App() {
   const path = useLocation().pathname;
@@ -18,7 +19,7 @@ function App() {
   return (
     <div className="w-full min-h-screen flex flex-col overflow-x-hidden overflow-y-auto  ">
       {
-        (path === "/login" || path === "/signup") ? null : <Navbar /> // Hide Navbar on Login and SignUp pages
+        (path === "/login" || path === "/signup" || path === "/admin") ? null : <Navbar /> // Hide Navbar on Login and SignUp pages
       }
       <Routes>
         <Route path="/" element={<Home />} />
@@ -30,9 +31,10 @@ function App() {
         <Route path="/profile" element={<UserProfile/>} />
         <Route path="/properties" element={<BrowseAllProperties />} />
         <Route path="/property/:id" element={<PropertyDetails />} />
+        <Route path="/admin" element={<AdminDashboard />} />
       </Routes>
       {
-        (path === "/login"||path === "/signup") ? null : <Footer /> // Hide Footer on Login and SignUp pages
+        (path === "/login"||path === "/signup" || path === "/admin") ? null : <Footer /> // Hide Footer on Login and SignUp pages
       }
     </div>
   );
