@@ -26,7 +26,6 @@ import TaskAltOutlinedIcon from "@mui/icons-material/TaskAltOutlined";
 import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined";
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import ManageAccountsOutlinedIcon from "@mui/icons-material/ManageAccountsOutlined";
-import { list } from "postcss";
 
 const Analytics = () => {
   const response = {
