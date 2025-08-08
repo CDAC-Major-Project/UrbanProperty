@@ -13,6 +13,7 @@ import BrowseAllProperties from "./Pages/BrowseAllProperties";
 import PropertyDetails from "./Pages/PropertyDetails";
 import Analytics from "./components/core/Admin/Analytics";
 import AdminDashboard from "./Pages/AdminDashboard";
+import AboutUs from "./Pages/AboutUs";
 import PropertyVerification from "./components/core/Admin/PropertyVerification";
 
 function App() {
@@ -30,13 +31,14 @@ function App() {
         <Route path="/dashboard/seller" element={<Dashboard />} />
         <Route path="/dashboard/buyer" element={<Dashboard />} />
         <Route path="/seller/list-property" element={<ListProperty />} />
-        <Route path="/profile" element={<UserProfile/>} />
+        <Route path="/profile" element={<UserProfile />} />
         <Route path="/properties" element={<BrowseAllProperties />} />
         <Route path="/property/:id" element={<PropertyDetails />} />
-        <Route element={<AdminDashboard/>} >
+        <Route element={<AdminDashboard />} >
           <Route path="/admin" element={<Analytics />} />
           <Route path="/admin/property-verification" element={<PropertyVerification />} />
         </Route>
+        <Route path="/aboutus" element={<AboutUs />} />
       </Routes>
       {
         (path === "/login"||path === "/signup" || path === "/admin" || path === "/admin/property-verification") ? null : <Footer /> // Hide Footer on Login and SignUp pages
