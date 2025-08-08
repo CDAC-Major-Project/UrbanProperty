@@ -8,7 +8,7 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import RemoveRedEyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined';
-
+import PropertyVerificationPopup from "./PropertyVerificationPopup";
 
 const PropertyVerification = () => {
 
@@ -22,7 +22,7 @@ const PropertyVerification = () => {
     address: "45 MG Road",
     city: "Pune",
     state: "Maharashtra",
-    prize: 8500000,
+    price: 8500000,
     status: "pending",
     created_at: "2025-07-01"
   },
@@ -35,7 +35,7 @@ const PropertyVerification = () => {
     address: "12 Green Park Colony",
     city: "Indore",
     state: "Madhya Pradesh",
-    prize: 4500000,
+    price: 4500000,
     status: "pending",
     created_at: "2025-07-02"
   },
@@ -48,7 +48,7 @@ const PropertyVerification = () => {
     address: "Plot 32, Industrial Area",
     city: "Ahmedabad",
     state: "Gujarat",
-    prize: 15000000,
+    price: 15000000,
     status: "pending",
     created_at: "2025-07-03"
   },
@@ -61,7 +61,7 @@ const PropertyVerification = () => {
     address: "Rosewood Estate",
     city: "Bengaluru",
     state: "Karnataka",
-    prize: 25000000,
+    price: 25000000,
     status: "pending",
     created_at: "2025-07-04"
   },
@@ -74,7 +74,7 @@ const PropertyVerification = () => {
     address: "Shop No. 5, Market Street",
     city: "Jaipur",
     state: "Rajasthan",
-    prize: 5500000,
+    price: 5500000,
     status: "pending",
     created_at: "2025-07-05"
   },
@@ -87,7 +87,7 @@ const PropertyVerification = () => {
     address: "NH-48 Highway",
     city: "Surat",
     state: "Gujarat",
-    prize: 8000000,
+    price: 8000000,
     status: "pending",
     created_at: "2025-07-06"
   },
@@ -100,7 +100,7 @@ const PropertyVerification = () => {
     address: "B-104, Sunrise Apartments",
     city: "Delhi",
     state: "Delhi",
-    prize: 1800000,
+    price: 1800000,
     status: "pending",
     created_at: "2025-07-07"
   },
@@ -113,7 +113,7 @@ const PropertyVerification = () => {
     address: "Near City Mall",
     city: "Chandigarh",
     state: "Punjab",
-    prize: 7000000,
+    price: 7000000,
     status: "pending",
     created_at: "2025-07-08"
   },
@@ -126,7 +126,7 @@ const PropertyVerification = () => {
     address: "Sector 15, Industrial Zone",
     city: "Nagpur",
     state: "Maharashtra",
-    prize: 12000000,
+    price: 12000000,
     status: "pending",
     created_at: "2025-07-09"
   },
@@ -139,7 +139,7 @@ const PropertyVerification = () => {
     address: "Skyline Towers",
     city: "Hyderabad",
     state: "Telangana",
-    prize: 35000000,
+    price: 35000000,
     status: "pending",
     created_at: "2025-07-10"
   },
@@ -152,7 +152,7 @@ const PropertyVerification = () => {
     address: "Cyber Hub",
     city: "Gurgaon",
     state: "Haryana",
-    prize: 18000000,
+    price: 18000000,
     status: "pending",
     created_at: "2025-07-11"
   },
@@ -165,7 +165,7 @@ const PropertyVerification = () => {
     address: "Plot 88, Industrial Layout",
     city: "Bhopal",
     state: "Madhya Pradesh",
-    prize: 20000000,
+    price: 20000000,
     status: "pending",
     created_at: "2025-07-12"
   },
@@ -178,7 +178,7 @@ const PropertyVerification = () => {
     address: "Sunrise Residency",
     city: "Vadodara",
     state: "Gujarat",
-    prize: 6000000,
+    price: 6000000,
     status: "pending",
     created_at: "2025-07-13"
   },
@@ -191,7 +191,7 @@ const PropertyVerification = () => {
     address: "WorkHub Center",
     city: "Mumbai",
     state: "Maharashtra",
-    prize: 15000000,
+    price: 15000000,
     status: "pending",
     created_at: "2025-07-14"
   },
@@ -204,7 +204,7 @@ const PropertyVerification = () => {
     address: "Sector 8 Industrial Park",
     city: "Ludhiana",
     state: "Punjab",
-    prize: 25000000,
+    price: 25000000,
     status: "pending",
     created_at: "2025-07-15"
   },
@@ -217,7 +217,7 @@ const PropertyVerification = () => {
     address: "Palm Beach Road",
     city: "Goa",
     state: "Goa",
-    prize: 12000000,
+    price: 12000000,
     status: "pending",
     created_at: "2025-07-16"
   },
@@ -230,7 +230,7 @@ const PropertyVerification = () => {
     address: "Main Market Road",
     city: "Kanpur",
     state: "Uttar Pradesh",
-    prize: 8000000,
+    price: 8000000,
     status: "pending",
     created_at: "2025-07-17"
   },
@@ -243,7 +243,7 @@ const PropertyVerification = () => {
     address: "Agro Industrial Estate",
     city: "Patna",
     state: "Bihar",
-    prize: 14000000,
+    price: 14000000,
     status: "pending",
     created_at: "2025-07-18"
   },
@@ -256,7 +256,7 @@ const PropertyVerification = () => {
     address: "Hill View Residency",
     city: "Shimla",
     state: "Himachal Pradesh",
-    prize: 22000000,
+    price: 22000000,
     status: "pending",
     created_at: "2025-07-19"
   },
@@ -269,12 +269,14 @@ const PropertyVerification = () => {
     address: "City Center Plaza",
     city: "Noida",
     state: "Uttar Pradesh",
-    prize: 30000000,
+    price: 30000000,
     status: "pending",
     created_at: "2025-07-20"
   }
 ];
 
+  const [ propertyVerificationPopupData, setPropertyVerificationPopupData ] = React.useState(null);
+  console.log('propertyVerificationPopupData', propertyVerificationPopupData);
 
   return (
     <div className="my-10 space-y-5 ">
@@ -325,6 +327,7 @@ const PropertyVerification = () => {
             <Table >
               <TableHead>
                 <TableRow>
+                  <TableCell sx={{fontWeight:"bold", fontSize:"16px"}} >Actions</TableCell>
                   <TableCell sx={{fontWeight:"bold", fontSize:"16px"}} >Title</TableCell>
                   <TableCell sx={{fontWeight:"bold", fontSize:"16px"}} >Seller</TableCell>
                   <TableCell sx={{fontWeight:"bold", fontSize:"16px"}} >Type</TableCell>
@@ -332,21 +335,27 @@ const PropertyVerification = () => {
                   <TableCell sx={{fontWeight:"bold", fontSize:"16px"}} >Location</TableCell>
                   <TableCell sx={{fontWeight:"bold", fontSize:"16px"}} >Submitted</TableCell>
                   <TableCell sx={{fontWeight:"bold", fontSize:"16px"}} >Status</TableCell>
-                  <TableCell sx={{fontWeight:"bold", fontSize:"16px"}} >Actions</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {
                   propertyVerificationData?.map((property, index) => (
-                    <TableRow key={index} >
-                      <TableCell sx={{color:"#000000"}} >{property?.tittle}</TableCell>
-                      <TableCell sx={{color:"#000000"}} >{property?.sellerName}</TableCell>
-                      <TableCell sx={{color:"#000000"}} >{property?.property_type}</TableCell>
-                      <TableCell sx={{color:"#000000"}} >₹{property?.prize.toLocaleString()}</TableCell>
-                      <TableCell sx={{color:"#000000"}} >{property?.address}</TableCell>
-                      <TableCell sx={{color:"#000000"}} >{new Date(property?.created_at).toLocaleDateString()}</TableCell>
-                      <TableCell sx={{color:"#000000"}} ><div className="bg-[#F5F5F5] px-2 py-1 rounded-full text-center " >{property?.status}</div></TableCell>
-                      <TableCell sx={{color:"#000000"}} > <div className="cursor-pointer shadow shadow-gray-400 border border-gray-400 flex items-center justify-center w-fit px-2 py-1 rounded " ><RemoveRedEyeOutlinedIcon fontSize="small" /></div></TableCell>
+                    <TableRow key={index} className="hover:bg-gray-100" >
+                      <TableCell sx={{color:"#000000", textWrap:"nowrap"}} > 
+                        <div 
+                          className="cursor-pointer shadow shadow-gray-400 border border-gray-400 flex items-center justify-center w-fit px-2 py-1 rounded " 
+                          onClick={() => setPropertyVerificationPopupData(property)}
+                        >
+                          <RemoveRedEyeOutlinedIcon fontSize="small" />
+                        </div>
+                      </TableCell>
+                      <TableCell sx={{color:"#000000", textWrap:"nowrap"}} >{property?.tittle}</TableCell>
+                      <TableCell sx={{color:"#000000", textWrap:"nowrap"}} >{property?.sellerName}</TableCell>
+                      <TableCell sx={{color:"#000000", textWrap:"nowrap"}} >{property?.property_type}</TableCell>
+                      <TableCell sx={{color:"#000000", textWrap:"nowrap"}} >₹{property?.price.toLocaleString()}</TableCell>
+                      <TableCell sx={{color:"#000000", textWrap:"nowrap"}} >{property?.address}</TableCell>
+                      <TableCell sx={{color:"#000000", textWrap:"nowrap"}} >{new Date(property?.created_at).toLocaleDateString()}</TableCell>
+                      <TableCell sx={{color:"#000000", textWrap:"nowrap"}} ><div className="bg-[#F5F5F5] px-2 py-1 rounded-full text-center " >{property?.status}</div></TableCell>
                     </TableRow>
                   ))
                 }
@@ -355,6 +364,11 @@ const PropertyVerification = () => {
           </TableContainer>
         </div>
       </div>
+
+      {
+        /* Property Verification Popup */
+        propertyVerificationPopupData && <PropertyVerificationPopup data={propertyVerificationPopupData} cancel={setPropertyVerificationPopupData} />
+      }
     </div>
   );
 };
