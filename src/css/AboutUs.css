@@ -1,0 +1,28 @@
+.urban-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 40px 20px;
+}
+
+.urban-heading {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-top: 70px;
+}
+
+.urban-subheading {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+
+.urban-text {
+    font-size: 1.2rem;
+    line-height: 1.5;
+    max-width: 1000px;
+    color: #444;
+}
