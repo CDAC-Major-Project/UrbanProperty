@@ -27,7 +27,7 @@ const Sidebar = () => {
     },
     {
       name: "Amenities",
-      path: "/admin/properties",
+      path: "/admin/amenities",
       icon: <HomeOutlinedIcon fontSize="small" />,
     },
     {
