@@ -5,6 +5,8 @@ import { useNavigate } from "react-router-dom";
 import * as yup from "yup";
 import axios from "axios";
 import toast from "react-hot-toast";
+import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined";
+import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
 
 const SignUp = () => {
   const [userType, setUserType] = useState("BUYER");
@@ -23,10 +25,13 @@ const SignUp = () => {
     firstName: yup.string().required(),
     lastName: yup.string().required(),
     email: yup.string().email().required(),
-    password: yup.string().required().matches(
-      /^(?=.*[a-z])(?=.*\d)(?=.*[#@$*])[A-Za-z\d#@$*]{5,20}$/,
-      "Password must contain a digit, lowercase letter, special character [#@$*] and be 5-20 characters long"
-    ),
+    password: yup
+      .string()
+      .required()
+      .matches(
+        /^(?=.*[a-z])(?=.*\d)(?=.*[#@$*])[A-Za-z\d#@$*]{5,20}$/,
+        "Password must contain a digit, lowercase letter, special character [#@$*] and be 5-20 characters long"
+      ),
     confirmPassword: yup.string().required(),
     phoneNumber: yup.number().required(),
   });
@@ -34,23 +39,27 @@ const SignUp = () => {
   const [formData, setFormData] = React.useState(data);
   const [errors, setErrors] = React.useState(null);
 
-  console.log("formdata ", formData);
-  console.log("errors ", errors);
+  const [isPasswordVisible, setIsPasswordVisible] = React.useState(false);
+  const [isconfirmPasswordVisible, setIsconfirmPasswordVisible] =
+    React.useState(false);
 
   const submitHandler = async () => {
     let loading = toast.loading("Loading...");
     try {
       await validationSchema.validate(formData, { abortEarly: false });
-      const response = await axios.post("http://192.168.2.119:8080/api/v1/users/register", {...formData, role:userType})
-    
-      if(response?.status !== 201){
+      const response = await axios.post(
+        "http://192.168.2.119:8080/api/v1/users/register",
+        { ...formData, role: userType }
+      );
+
+      if (response?.status !== 201) {
         throw new Error("Something went wrong in Sign up");
       }
       toast.success("SignUp Successfully");
       navigate("/login");
     } catch (error) {
-      console.log("error", error)
-      toast.error("");
+      console.log("error", error);
+      toast.error("Could not SignUp");
       const errors = {};
       error.inner.forEach((err) => {
         errors[err.path] = err.message;
@@ -203,24 +212,34 @@ const SignUp = () => {
             </div>
 
             <div className="grid grid-cols-2 gap-5 ">
-              <lable className="space-y-2">
+              <lable className="space-y-2 col-span-1 ">
                 <p className="text-white text-sm ">
                   Password <span className="text-red-500">*</span>
                 </p>
                 <div>
-                  <input
-                    type="password"
-                    value={formData?.password}
-                    onChange={(e) =>
-                      setFormData((prev) => ({
-                        ...prev,
-                        password: e.target.value,
-                      }))
-                    }
-                    placeholder="Enter password"
-                    className="w-full bg-[#0099CC] text-black rounded-lg outline-none px-3 py-1.5"
-                    required
-                  />
+                  <div className="relative" >
+                    <input
+                      type={isPasswordVisible ? "text" : "password"}
+                      value={formData?.password}
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          password: e.target.value,
+                        }))
+                      }
+                      placeholder="Enter password"
+                      className="w-full bg-[#0099CC] text-black rounded-lg outline-none px-3 py-1.5"
+                      required
+                    />
+
+                    <button type="button" onClick={() => setIsPasswordVisible((prev) => !prev)} className=" cursor-pointer absolute top-1.5 right-2 ">
+                      {isPasswordVisible ? (
+                        <RemoveRedEyeOutlinedIcon fontSize="small" />
+                      ) : (
+                        <VisibilityOffOutlinedIcon fontSize="small" />
+                      )}
+                    </button>
+                  </div>
                   {errors?.password && (
                     <span className="font-semibold text-xs text-black">
                       Length b/w 5-10, digits, lowercase, special character
@@ -228,13 +247,13 @@ const SignUp = () => {
                   )}
                 </div>
               </lable>
-              <lable className="space-y-2">
+              <lable className="space-y-2 col-span-1 ">
                 <p className="text-white text-sm ">
                   Confirm Password <span className="text-red-500">*</span>
                 </p>
-                <div>
+                <div className="relative" >
                   <input
-                    type="password"
+                    type={isconfirmPasswordVisible ? "text" : "password"}
                     value={formData?.confirmPassword}
                     onChange={(e) =>
                       setFormData((prev) => ({
@@ -246,6 +265,13 @@ const SignUp = () => {
                     className="w-full bg-[#0099CC] text-black rounded-lg outline-none px-3 py-1.5"
                     required
                   />
+                  <button type="button" onClick={() => setIsconfirmPasswordVisible((prev) => !prev)} className=" cursor-pointer absolute top-1.5 right-2 ">
+                      {isconfirmPasswordVisible ? (
+                        <RemoveRedEyeOutlinedIcon fontSize="small" />
+                      ) : (
+                        <VisibilityOffOutlinedIcon fontSize="small" />
+                      )}
+                    </button>
                   {errors?.confirmPassword && (
                     <span className="font-semibold text-xs text-black">
                       Confirm Password is required
