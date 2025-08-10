@@ -80,35 +80,49 @@ const UserManagement = () => {
     },
   ];
 
-  const [filterProperty, setFilterProperty] = React.useState(""); //
-  const [debouncedFilterProperty] = useDebounce(filterProperty, 500); //
+  const [filterRoles, setFilterRoles] = React.useState("");
 
-  const [displayProperties, setDisplayProperties] =
-    React.useState(initialUsers);
+  const [filterUserByName, setFilterUserByName] = React.useState(""); //
+  const [debouncedFilterUser] = useDebounce(filterUserByName, 500);
 
+  const [displayUsers, setDisplayUsers] = React.useState(initialUsers);
+
+  // search user by name
   React.useEffect(() => {
-    if (debouncedFilterProperty === "") {
-      setDisplayProperties(initialUsers);
+    if (debouncedFilterUser === "") {
+      setDisplayUsers(initialUsers);
     } else {
       const data = initialUsers?.filter((user) => {
         if (
           user?.name
             ?.toLowerCase()
-            ?.includes(debouncedFilterProperty?.toLowerCase()) ||
+            ?.includes(debouncedFilterUser?.toLowerCase()) ||
           user?.email
             ?.toLowerCase()
-            ?.includes(debouncedFilterProperty?.toLowerCase())
+            ?.includes(debouncedFilterUser?.toLowerCase())
         ) {
           return user;
         }
       });
 
-      setDisplayProperties(data);
+      setDisplayUsers(data);
     }
-  }, [debouncedFilterProperty]); //
+  }, [debouncedFilterUser]);
 
-  const [propertyVerificationPopupData, setPropertyVerificationPopupData] =
-    React.useState(null); //
+  //   search user by roles
+  
+  const filterUserRole = () => {
+    if(filterRoles === ""){
+        setDisplayUsers(initialUsers);
+    }else{
+        const data = initialUsers?.filter((user) => user?.role === filterRoles);
+        setDisplayUsers(data);
+    }
+  }
+  React.useEffect(() => {
+    filterUserRole();
+  }, [filterRoles])
+
 
   return (
     <div className="my-10 space-y-5 ">
@@ -127,9 +141,9 @@ const UserManagement = () => {
           {/* total count */}
           <div>
             <p className="text-4xl font-extrabold text-black ">
-                <CountUp duration={5} end={1234} />
+              <CountUp duration={5} end={1234} />
             </p>
-            <p className="text-xs text-gray-600" >Registered users</p>
+            <p className="text-xs text-gray-600">Registered users</p>
           </div>
         </div>
 
@@ -141,9 +155,9 @@ const UserManagement = () => {
 
           <div>
             <p className="text-4xl font-extrabold text-green-600 ">
-                <CountUp duration={5} end={3546} />
+              <CountUp duration={5} end={3546} />
             </p>
-            <p className="text-xs text-gray-600" >Currently active</p>
+            <p className="text-xs text-gray-600">Currently active</p>
           </div>
         </div>
 
@@ -154,9 +168,9 @@ const UserManagement = () => {
           </div>
           <div>
             <p className="text-4xl font-extrabold text-[#155DFC] ">
-                <CountUp duration={5} end={3} />
+              <CountUp duration={5} end={3} />
             </p>
-            <p className="text-xs text-gray-600" >Property sellers</p>
+            <p className="text-xs text-gray-600">Property sellers</p>
           </div>
         </div>
 
@@ -168,9 +182,9 @@ const UserManagement = () => {
           {/* total count */}
           <div>
             <p className="text-4xl font-extrabold text-[#A91FFA] ">
-                <CountUp duration={5} end={3} />
+              <CountUp duration={5} end={3} />
             </p>
-            <p className="text-xs text-gray-600" >Property buyers</p>
+            <p className="text-xs text-gray-600">Property buyers</p>
           </div>
         </div>
       </div>
@@ -178,12 +192,12 @@ const UserManagement = () => {
       {/* User table */}
       <div className=" space-y-5 border-2 border-gray-300 bg-white rounded-2xl shadow-gray-300 shadow-lg p-5">
         {/* filter */}
-        <div className="flex gap-5" >
+        <div className="flex gap-5">
           <div className=" w-1/2 border border-gray-400 hover:border-gray-700 p-2 rounded-xl flex items-center gap-3">
             <SearchIcon sx={{ color: "#303087" }} />
             <input
               type="text"
-              onChange={(e) => setFilterProperty(e.target.value)}
+              onChange={(e) => setFilterUserByName(e.target.value)}
               placeholder="Search users by name or email..."
               className="outline-none text-gray-700 w-full "
             />
@@ -191,8 +205,8 @@ const UserManagement = () => {
 
           <div className="flex w-1/2 space-x-4 ">
             <Select
-              value={""}
-              onChange={() => ""}
+              value={filterRoles}
+              onChange={(e) => setFilterRoles(e.target.value)}
               displayEmpty
               inputProps={{ "aria-label": "Without label" }}
               sx={{
@@ -205,22 +219,6 @@ const UserManagement = () => {
               <MenuItem value={"buyer"}>Buyer</MenuItem>
               <MenuItem value={"seller"}>Seller</MenuItem>
             </Select>
-
-            <Select
-              value={""}
-              onChange={() => ""}
-              displayEmpty
-              inputProps={{ "aria-label": "Without label" }}
-              sx={{
-                borderRadius: "10px",
-                height: "43px",
-              }}
-              className="w-1/2"
-            >
-              <MenuItem value="">All Status</MenuItem>
-              <MenuItem value="1000000-1500000">Active</MenuItem>
-              <MenuItem value="1600000-2000000">Inactive</MenuItem>
-            </Select>
           </div>
         </div>
 
@@ -228,9 +226,9 @@ const UserManagement = () => {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell sx={{ fontWeight: "bold", fontSize: "16px" }}>
-                  
-                </TableCell>
+                <TableCell
+                  sx={{ fontWeight: "bold", fontSize: "16px" }}
+                ></TableCell>
                 <TableCell sx={{ fontWeight: "bold", fontSize: "16px" }}>
                   User
                 </TableCell>
@@ -249,7 +247,7 @@ const UserManagement = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {displayProperties?.map((user, index) => (
+              {displayUsers?.map((user, index) => (
                 <TableRow key={index} className="hover:bg-gray-100">
                   <TableCell sx={{ color: "#000000", textWrap: "nowrap" }}>
                     <div className="flex gap-2">
@@ -266,23 +264,28 @@ const UserManagement = () => {
                     </div>
                   </TableCell>
                   <TableCell sx={{ color: "#000000", textWrap: "nowrap" }}>
-                  <div className="flex flex-col" >
-                    <span className="text-md font-semibold text-black" >{user?.name}</span>
-                    <span className="text-xs text-gray-600" >{user?.email}</span>
-                  </div>
+                    <div className="flex flex-col">
+                      <span className="text-md font-semibold text-black">
+                        {user?.name}
+                      </span>
+                      <span className="text-xs text-gray-600">
+                        {user?.email}
+                      </span>
+                    </div>
                   </TableCell>
                   <TableCell sx={{ color: "#000000", textWrap: "nowrap" }}>
                     {user?.role}
                   </TableCell>
                   <TableCell sx={{ color: "#000000", textWrap: "nowrap" }}>
                     <span
-                        className={`px-2.5 py-0.5 rounded-md text-xs font-semibold ${
-                          user?.status === "active"
-                            ? "bg-black text-white font-semibold"
-                            : "bg-gray-100 text-black font-semibold"
-                        }`}
+                      className={`px-2.5 py-0.5 rounded-md text-xs font-semibold ${
+                        user?.status === "active"
+                          ? "bg-black text-white font-semibold"
+                          : "bg-gray-100 text-black font-semibold"
+                      }`}
                     >
-                        {user?.status.charAt(0).toUpperCase() + user?.status?.slice(1)}
+                      {user?.status.charAt(0).toUpperCase() +
+                        user?.status?.slice(1)}
                     </span>
                   </TableCell>
                   <TableCell sx={{ color: "#000000", textWrap: "nowrap" }}>
@@ -297,16 +300,6 @@ const UserManagement = () => {
           </Table>
         </TableContainer>
       </div>
-
-      {
-        /* Property Verification Popup */
-        propertyVerificationPopupData && (
-          <PropertyVerificationPopup
-            data={propertyVerificationPopupData}
-            cancel={setPropertyVerificationPopupData}
-          />
-        )
-      }
     </div>
   );
 };
