@@ -285,8 +285,6 @@ const PropertyVerification = () => {
 
   const [filterProperty, setFilterProperty] = React.useState("");
   const [ debouncedFilterProperty] = useDebounce(filterProperty, 500);
-  
-  console.log("debouncedFilterProperty ", debouncedFilterProperty)
 
   const [displayProperties, setDisplayProperties] = React.useState(
     propertyVerificationData

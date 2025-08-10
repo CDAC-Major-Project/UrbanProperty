@@ -6,7 +6,7 @@ import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import PeopleAltOutlinedIcon from "@mui/icons-material/PeopleAltOutlined";
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 import Logout from "../../common/Logout"; // Assuming you have a Logout component for confirmation dialog
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const Sidebar = () => {
   const menuItems = [
@@ -22,7 +22,7 @@ const Sidebar = () => {
     },
     {
       name: "Property Types",
-      path: "/admin/users",
+      path: "/admin/property-type",
       icon: <ApartmentOutlinedIcon fontSize="small" />,
     },
     {
@@ -38,8 +38,10 @@ const Sidebar = () => {
   ];
 
   const [isLogoutOpen, setIsLogoutOpen] = React.useState(false);
-  const [activeItem, setActiveItem] = React.useState("Dashboard");
+  // const [activeItem, setActiveItem] = React.useState("Dashboard");
 
+  const path = useLocation().pathname;
+ 
   const navigate = useNavigate();
 
   return (
@@ -48,10 +50,10 @@ const Sidebar = () => {
         {menuItems?.map((items, index) => (
           <div
             key={index}
-            className={` ${activeItem !== items?.name && "hover:bg-gray-100 hover:text-black"} flex items-center space-x-2 cursor-pointer text-[#757575] p-2 py-2 rounded-xl ${
-              activeItem === items?.name && "bg-black text-white"
+            className={` ${path !== items?.path && "hover:bg-gray-100 hover:text-black"} flex items-center space-x-2 cursor-pointer text-[#757575] p-2 py-2 rounded-xl ${
+              path === items?.path ? "bg-black text-white" : ""
             } `}
-            onClick={() => {setActiveItem(items?.name); navigate(items?.path);}}
+            onClick={() => { navigate(items?.path);}}
           >
             {items.icon}
             <span className="text-sm font-semibold text-nowrap ">
