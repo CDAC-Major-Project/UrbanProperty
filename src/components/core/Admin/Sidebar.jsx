@@ -32,7 +32,7 @@ const Sidebar = () => {
     },
     {
       name: "User Management",
-      path: "/admin/reports",
+      path: "/admin/users",
       icon: <PeopleAltOutlinedIcon fontSize="small" />,
     },
   ];

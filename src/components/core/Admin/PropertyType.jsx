@@ -181,16 +181,29 @@ export default function PropertyType() {
           <Table>
             <TableHead>
               <TableRow>
+                <TableCell sx={{ fontWeight: "bold", fontSize: "16px" }} >Actions</TableCell>
                 <TableCell sx={{ fontWeight: "bold", fontSize: "16px" }} >Name</TableCell>
                 <TableCell sx={{ fontWeight: "bold", fontSize: "16px" }} >Description</TableCell>
                 <TableCell sx={{ fontWeight: "bold", fontSize: "16px" }} >Properties Count</TableCell>
                 <TableCell sx={{ fontWeight: "bold", fontSize: "16px" }} >Created Date</TableCell>
-                <TableCell sx={{ fontWeight: "bold", fontSize: "16px" }} >Actions</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {propertyTypes.map((type) => (
                 <TableRow key={type.id}>
+                  <TableCell sx={{ color: "#000000", textWrap: "nowrap" }} >
+                    <div className="flex gap-2">
+                      <IconButton onClick={() => {setEditPropertyType(type); setEditFlag(true)}}>
+                        <EditIcon fontSize="small" sx={{color:"#000000"}} />
+                      </IconButton>
+                      <IconButton
+                        onClick={() => handleDelete(type.id)}
+                        sx={{color:"#e53935"}}
+                      >
+                        <DeleteIcon fontSize="small" />
+                      </IconButton>
+                    </div>
+                  </TableCell>
                   <TableCell sx={{ color: "#000000", textWrap: "nowrap" }} >
                     <div className="flex items-center gap-2">
                       <BusinessIcon
@@ -207,19 +220,6 @@ export default function PropertyType() {
                     {type.count}
                   </TableCell>
                   <TableCell sx={{ color: "#000000", textWrap: "nowrap" }} >{type.createdDate}</TableCell>
-                  <TableCell sx={{ color: "#000000", textWrap: "nowrap" }} >
-                    <div className="flex gap-2">
-                      <IconButton onClick={() => {setEditPropertyType(type); setEditFlag(true)}}>
-                        <EditIcon fontSize="small" sx={{color:"#000000"}} />
-                      </IconButton>
-                      <IconButton
-                        onClick={() => handleDelete(type.id)}
-                        sx={{color:"#e53935"}}
-                      >
-                        <DeleteIcon fontSize="small" />
-                      </IconButton>
-                    </div>
-                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
