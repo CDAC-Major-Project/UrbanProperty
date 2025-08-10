@@ -3,7 +3,7 @@ import '../css/AboutUs.css'; // Import the CSS file
 
 const AboutUs = () => {
     return (
-        <div style={{ width: '100%', margin: 0, padding: 0 }}>
+        <div  style={{ width: '100%', marginTop: 100, padding: 0 }}>
             <section className="urban-section">
                 <h1 className="urban-heading">
                     <span style={{ color: '#333333' }}>THE </span>

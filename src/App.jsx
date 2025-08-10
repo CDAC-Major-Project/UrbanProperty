@@ -15,6 +15,7 @@ import Analytics from "./components/core/Admin/Analytics";
 import AdminDashboard from "./Pages/AdminDashboard";
 import AboutUs from "./Pages/AboutUs";
 import PropertyVerification from "./components/core/Admin/PropertyVerification";
+import PropertyType from "./components/core/Admin/PropertyType"; 
 
 function App() {
   const path = useLocation().pathname;
@@ -22,7 +23,7 @@ function App() {
   return (
     <div className="w-full min-h-screen flex flex-col overflow-x-hidden overflow-y-auto  ">
       {
-        (path === "/login" || path === "/signup" || path === "/admin" || path === "/admin/property-verification") ? null : <Navbar /> // Hide Navbar on Login and SignUp pages
+        (path === "/login" || path === "/signup" || path === "/admin" || path === "/admin/property-verification" || path === "/admin/property-type") ? null : <Navbar /> // Hide Navbar on Login and SignUp pages
       }
       <Routes>
         <Route path="/" element={<Home />} />
@@ -37,11 +38,12 @@ function App() {
         <Route element={<AdminDashboard />} >
           <Route path="/admin" element={<Analytics />} />
           <Route path="/admin/property-verification" element={<PropertyVerification />} />
+          <Route path="/admin/property-type" element={<PropertyType/>} />
         </Route>
         <Route path="/aboutus" element={<AboutUs />} />
       </Routes>
       {
-        (path === "/login"||path === "/signup" || path === "/admin" || path === "/admin/property-verification") ? null : <Footer /> // Hide Footer on Login and SignUp pages
+        (path === "/login"||path === "/signup" || path === "/admin" || path === "/admin/property-verification" || path === "/admin/property-type" ) ? null : <Footer /> // Hide Footer on Login and SignUp pages
       }
     </div>
   );

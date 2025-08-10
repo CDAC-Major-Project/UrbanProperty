@@ -12,7 +12,7 @@ const AdminDashboard = () => {
         {/* <div> */}
           <div className="p-5 border-b border-gray-300 ">
             <h1 className="font-semibold text-2xl">
-              {path === "/admin" ? "Dashboard" : path === "/admin/property-verification" ? "Property Verification" : ""}
+              {path === "/admin" ? "Dashboard" : path === "/admin/property-verification" ? "Property Verification" : path === "/admin/property-type" ? "Property type" : ""}
             </h1>
           </div>
           <div className=" flex-1 overflow-y-auto w-full">
