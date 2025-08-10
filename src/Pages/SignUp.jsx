@@ -2,10 +2,63 @@ import { useState } from "react";
 import SighupPhoto from "../assets/Images/signup.jpg";
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import * as yup from "yup";
+import axios from "axios";
+import toast from "react-hot-toast";
 
 const SignUp = () => {
-  const [userType, setUserType] = useState("buyer");
+  const [userType, setUserType] = useState("BUYER");
   const navigate = useNavigate();
+
+  const data = {
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+    phoneNumber: null,
+  };
+
+  const validationSchema = yup.object().shape({
+    firstName: yup.string().required(),
+    lastName: yup.string().required(),
+    email: yup.string().email().required(),
+    password: yup.string().required().matches(
+      /^(?=.*[a-z])(?=.*\d)(?=.*[#@$*])[A-Za-z\d#@$*]{5,20}$/,
+      "Password must contain a digit, lowercase letter, special character [#@$*] and be 5-20 characters long"
+    ),
+    confirmPassword: yup.string().required(),
+    phoneNumber: yup.number().required(),
+  });
+
+  const [formData, setFormData] = React.useState(data);
+  const [errors, setErrors] = React.useState(null);
+
+  console.log("formdata ", formData);
+  console.log("errors ", errors);
+
+  const submitHandler = async () => {
+    let loading = toast.loading("Loading...");
+    try {
+      await validationSchema.validate(formData, { abortEarly: false });
+      const response = await axios.post("http://192.168.2.119:8080/api/v1/users/register", {...formData, role:userType})
+    
+      if(response?.status !== 201){
+        throw new Error("Something went wrong in Sign up");
+      }
+      toast.success("SignUp Successfully");
+      navigate("/login");
+    } catch (error) {
+      console.log("error", error)
+      toast.error("");
+      const errors = {};
+      error.inner.forEach((err) => {
+        errors[err.path] = err.message;
+      });
+      setErrors(errors);
+    }
+    toast.dismiss(loading);
+  };
 
   return (
     <div className="w-screen h-screen bg-[#2D3285] ">
@@ -23,92 +76,192 @@ const SignUp = () => {
         <div className="w-1/2">
           <div className="flex w-fit p-1 gap-x-1 my-6 rounded-full bg-black ">
             <button
-              onClick={() => setUserType("buyer")}
+              onClick={() => setUserType("BUYER")}
               className={`${
-                userType === "buyer" ? "bg-[#0099CC]" : ""
+                userType === "BUYER" ? "bg-[#0099CC]" : ""
               } font-semibold text-white py-2 px-5 rounded-full transition-all duration-200 cursor-pointer `}
             >
               Buyer
             </button>
 
             <button
-              onClick={() => setUserType("seller")}
+              onClick={() => setUserType("SELLER")}
               className={`${
-                userType === "seller" ? "bg-[#0099CC]" : ""
+                userType === "SELLER" ? "bg-[#0099CC]" : ""
               } font-semibold text-white py-2 px-5 rounded-full transition-all duration-200 cursor-pointer `}
             >
               Seller
             </button>
           </div>
 
-          <form className="flex flex-col gap-5" >
+          <form className="flex flex-col gap-5">
             <div className="grid grid-cols-2 gap-5 ">
-              <lable className="space-y-2" >
+              <lable className="space-y-2">
                 <p className="text-white text-sm ">
                   First Name <span className="text-red-500">*</span>
                 </p>
-                <input
-                  type="text"
-                  placeholder="Enter first name"
-                  className="w-full bg-[#0099CC] text-black rounded-lg outline-none px-3 py-1.5"
-                  required
-                />
+                <div>
+                  <input
+                    type="text"
+                    value={formData?.firstName}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        firstName: e.target.value,
+                      }))
+                    }
+                    placeholder="Enter first name"
+                    className="w-full bg-[#0099CC] text-black rounded-lg outline-none px-3 py-1.5"
+                    required
+                  />
+                  {errors?.firstName && (
+                    <span className="font-semibold text-xs text-black">
+                      First name is required
+                    </span>
+                  )}
+                </div>
               </lable>
-              <lable className="space-y-2" >
+              <lable className="space-y-2">
                 <p className="text-white text-sm ">
                   Last Name <span className="text-red-500">*</span>
                 </p>
-                <input
-                  type="text"
-                  placeholder="Enter last name"
-                  className="w-full bg-[#0099CC] text-black rounded-lg outline-none px-3 py-1.5"
-                  required
-                />
+                <div>
+                  <input
+                    type="text"
+                    value={formData?.lastName}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        lastName: e.target.value,
+                      }))
+                    }
+                    placeholder="Enter last name"
+                    className="w-full bg-[#0099CC] text-black rounded-lg outline-none px-3 py-1.5"
+                    required
+                  />
+                  {errors?.lastName && (
+                    <span className="font-semibold text-xs text-black">
+                      Last name is required
+                    </span>
+                  )}
+                </div>
               </lable>
             </div>
 
-            <lable className="space-y-2" >
-              <p className="text-white text-sm ">
-                Email Address <span className="text-red-500">*</span>
-              </p>
-              <input
-                type="email"
-                placeholder="Enter email address"
-                className="w-full bg-[#0099CC] text-black rounded-lg outline-none px-3 py-1.5"
-                required
-              />
-            </lable>
+            <div className="grid grid-cols-2 gap-5 ">
+              <lable className="space-y-2">
+                <p className="text-white text-sm ">
+                  Email Address <span className="text-red-500">*</span>
+                </p>
+                <div>
+                  <input
+                    type="email"
+                    value={formData?.email}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        email: e.target.value,
+                      }))
+                    }
+                    placeholder="Enter email address"
+                    className="w-full bg-[#0099CC] text-black rounded-lg outline-none px-3 py-1.5"
+                    required
+                  />
+                  {errors?.email && (
+                    <span className="font-semibold text-xs text-black">
+                      email is required
+                    </span>
+                  )}
+                </div>
+              </lable>
+
+              <lable className="space-y-2">
+                <p className="text-white text-sm ">
+                  Contact Number <span className="text-red-500">*</span>
+                </p>
+                <div>
+                  <input
+                    type="Number"
+                    value={formData?.phoneNumber}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        phoneNumber: e.target.value,
+                      }))
+                    }
+                    placeholder="Enter email address"
+                    className="w-full bg-[#0099CC] text-black rounded-lg outline-none px-3 py-1.5"
+                    required
+                  />
+                  {errors?.phoneNumber && (
+                    <span className="font-semibold text-xs text-black">
+                      Phone Number is required
+                    </span>
+                  )}
+                </div>
+              </lable>
+            </div>
 
             <div className="grid grid-cols-2 gap-5 ">
-              <lable className="space-y-2" >
+              <lable className="space-y-2">
                 <p className="text-white text-sm ">
                   Password <span className="text-red-500">*</span>
                 </p>
-                <input
-                  type="password"
-                  placeholder="Enter password"
-                  className="w-full bg-[#0099CC] text-black rounded-lg outline-none px-3 py-1.5"
-                  required
-                />
+                <div>
+                  <input
+                    type="password"
+                    value={formData?.password}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        password: e.target.value,
+                      }))
+                    }
+                    placeholder="Enter password"
+                    className="w-full bg-[#0099CC] text-black rounded-lg outline-none px-3 py-1.5"
+                    required
+                  />
+                  {errors?.password && (
+                    <span className="font-semibold text-xs text-black">
+                      Length b/w 5-10, digits, lowercase, special character
+                    </span>
+                  )}
+                </div>
               </lable>
-              <lable className="space-y-2" >
+              <lable className="space-y-2">
                 <p className="text-white text-sm ">
                   Confirm Password <span className="text-red-500">*</span>
                 </p>
-                <input
-                  type="password"
-                  placeholder="Confirm password"
-                  className="w-full bg-[#0099CC] text-black rounded-lg outline-none px-3 py-1.5"
-                  required
-                />
+                <div>
+                  <input
+                    type="password"
+                    value={formData?.confirmPassword}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        confirmPassword: e.target.value,
+                      }))
+                    }
+                    placeholder="Confirm password"
+                    className="w-full bg-[#0099CC] text-black rounded-lg outline-none px-3 py-1.5"
+                    required
+                  />
+                  {errors?.confirmPassword && (
+                    <span className="font-semibold text-xs text-black">
+                      Confirm Password is required
+                    </span>
+                  )}
+                </div>
               </lable>
             </div>
 
             <button
-                onClick={() => navigate("/dashboard/seller")}
-                type="button"
-                className="bg-black font-semibold text-white cursor-pointer px-4 py-2 rounded-lg"
-            >Create Account</button>
+              onClick={() => submitHandler()}
+              type="button"
+              className="bg-black font-semibold text-white cursor-pointer px-4 py-2 rounded-lg"
+            >
+              Create Account
+            </button>
           </form>
         </div>
       </div>

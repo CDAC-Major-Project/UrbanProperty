@@ -219,6 +219,7 @@ const UserManagement = () => {
               <MenuItem value={"buyer"}>Buyer</MenuItem>
               <MenuItem value={"seller"}>Seller</MenuItem>
             </Select>
+            
           </div>
         </div>
 
