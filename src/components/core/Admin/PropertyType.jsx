@@ -20,7 +20,7 @@ import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import BusinessIcon from "@mui/icons-material/Business";
-import EditPropertyTypePopup from "./EditPropertyTypePopup";
+import EditPropertyTypePopup from "./PropertyTypePopup";
 
 const initialPropertyTypes = [
   {
