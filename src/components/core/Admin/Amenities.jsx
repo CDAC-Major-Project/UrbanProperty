@@ -161,6 +161,9 @@ export default function Amenities() {
           <Table>
             <TableHead>
               <TableRow>
+                <TableCell sx={{ fontWeight: "bold", fontSize: "16px", whiteSpace: "nowrap" }}>
+                  Actions
+                </TableCell>
                 <TableCell sx={{ fontWeight: "bold", fontSize: "16px", whiteSpace: "nowrap"}}>
                   Name
                 </TableCell>
@@ -176,14 +179,31 @@ export default function Amenities() {
                 <TableCell sx={{ fontWeight: "bold", fontSize: "16px", whiteSpace: "nowrap" }}>
                   Created Date
                 </TableCell>
-                <TableCell sx={{ fontWeight: "bold", fontSize: "16px", whiteSpace: "nowrap" }}>
-                  Actions
-                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {amenities.map((amenity) => (
                 <TableRow key={amenity.id}>
+                  <TableCell sx={{ color: "#000000", textWrap: "nowrap" }}>
+                    <div className="flex gap-2">
+                      {/* Edit button with Lucide icon and Tailwind styling */}
+                      <button
+                        className="p-2 rounded-full hover:bg-gray-100 transition-colors"
+                        onClick={() => {setEditAmenities(amenity); setEditFlag(true)}}
+                        title="Edit"
+                      >
+                        <EditIcon fontSize="small" sx={{color:"#000000"}} />
+                      </button>
+                      {/* Delete button with Lucide icon and Tailwind styling */}
+                      <button
+                        className="p-2 rounded-full hover:bg-red-100 transition-colors"
+                        onClick={""}
+                        title="Delete"
+                      >
+                        <DeleteIcon fontSize="small" sx={{color:"#e53935"}} />
+                      </button>
+                    </div>
+                  </TableCell>
                   <TableCell sx={{ color: "#000000", textWrap: "nowrap" }}>
                     <div className="flex items-center gap-2">
                       {amenity.name}
@@ -228,26 +248,6 @@ export default function Amenities() {
                   </TableCell>
                   <TableCell sx={{ color: "#000000", textWrap: "nowrap" }}>
                     {amenity.createdDate}
-                  </TableCell>
-                  <TableCell sx={{ color: "#000000", textWrap: "nowrap" }}>
-                    <div className="flex gap-2">
-                      {/* Edit button with Lucide icon and Tailwind styling */}
-                      <button
-                        className="p-2 rounded-full hover:bg-gray-100 transition-colors"
-                        onClick={() => {setEditAmenities(amenity); setEditFlag(true)}}
-                        title="Edit"
-                      >
-                        <EditIcon fontSize="small" sx={{color:"#000000"}} />
-                      </button>
-                      {/* Delete button with Lucide icon and Tailwind styling */}
-                      <button
-                        className="p-2 rounded-full hover:bg-red-100 transition-colors"
-                        onClick={""}
-                        title="Delete"
-                      >
-                        <DeleteIcon fontSize="small" sx={{color:"#e53935"}} />
-                      </button>
-                    </div>
                   </TableCell>
                 </TableRow>
               ))}
