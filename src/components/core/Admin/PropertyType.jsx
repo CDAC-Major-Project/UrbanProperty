@@ -22,6 +22,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import BusinessIcon from "@mui/icons-material/Business";
 import EditPropertyTypePopup from "./PropertyTypePopup";
 
+
 const initialPropertyTypes = [
   {
     id: 1,
