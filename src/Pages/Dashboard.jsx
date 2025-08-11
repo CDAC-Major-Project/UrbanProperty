@@ -5,6 +5,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import { Button, Chip } from "@mui/material";
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 export default function Dashboard() {
   const myProperties = [
@@ -62,13 +63,16 @@ export default function Dashboard() {
 
   const location = useLocation().pathname;
   const navigate = useNavigate();
+
+  const { userDetails} = useSelector((state) => state.auth);
+
   return (
     <div className="bg-[#F9FAFB] min-h-screen ">
       <div className="w-11/12 mx-auto mt-50  space-y-10 ">
         {/* Welcome Section */}
         <div className="flex justify-between items-center">
           <div>
-            <h3 className="font-bold text-5xl ">Welcome back, Alex!</h3>
+            <h3 className="font-bold text-5xl ">Welcome back, {userDetails?.firstName}!</h3>
             <h6 className="text-gray-600 text-lg">
               {location === "/dashboard/seller"
                 ? "Manage your property listings"
@@ -171,7 +175,7 @@ export default function Dashboard() {
 
             <button
               type="button"
-              className=" cursor-pointer w-full py-2 text-white font-semibold rounded-xl bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 shadow-md hover:shadow-lg transition-all duration-200 "
+              className=" cursor-pointer w-full py-2 text-white font-semibold rounded-xl bg-black hover:bg-[#181818] shadow-md hover:shadow-lg transition-all duration-200 "
             >
               {location === "/dashboard/seller"
                 ? "View All Properties"
