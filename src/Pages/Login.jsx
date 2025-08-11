@@ -6,7 +6,8 @@ import * as yup from "yup";
 import toast from "react-hot-toast";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-
+import { useDispatch } from "react-redux";
+import { setToken, setUserDetails } from "../slices/authSlice";
 
 const Login = () => {
   const [formData, setFormData] = React.useState({
@@ -14,6 +15,8 @@ const Login = () => {
     password: "",
   });
 
+
+  const dispatch = useDispatch();
   const [isPasswordVisible, setIsPasswordVisible] = React.useState(false);
   const [errors, setErrors] = React.useState(null);
   const navigate = useNavigate();
@@ -43,6 +46,9 @@ const Login = () => {
       }
       localStorage.setItem("token", JSON.stringify(response?.data?.token));
       localStorage.setItem("userDetails", JSON.stringify(response?.data?.userDetails));
+
+      dispatch(setToken(response?.data?.token));
+      dispatch(setUserDetails(response?.data?.userDetails));
 
       if(response?.data?.userDetails?.role === "BUYER"){
         navigate("/dashboard/buyer");
