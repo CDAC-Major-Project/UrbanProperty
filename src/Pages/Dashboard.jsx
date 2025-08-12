@@ -1,78 +1,40 @@
-import image from "../assets/Images/banner1.png";
 import ModeEditOutlineIcon from "@mui/icons-material/ModeEditOutline";
 import AddIcon from "@mui/icons-material/Add";
-import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityIcon from "@mui/icons-material/Visibility";
 import { Button, Chip } from "@mui/material";
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { getSavedProperties } from "../Services/propertiesAPI";
+import defaultImage from "../assets/Images/defaultHouseImage.jpeg"
 
 export default function Dashboard() {
-  const myProperties = [
-    {
-      id: 1,
-      title: "Modern Villa",
-      location: "Beverly Hills",
-      price: "$2,500,000",
-      status: "Active",
-      views: 45,
-      inquiries: 8,
-      image: image,
-    },
-    {
-      id: 2,
-      title: "Downtown Loft",
-      location: "Manhattan",
-      price: "$1,200,000",
-      status: "Pending",
-      views: 32,
-      inquiries: 12,
-      image: image,
-    },
-    {
-      id: 3,
-      title: "Downtown Loft",
-      location: "Manhattan",
-      price: "$1,200,000",
-      status: "Pending",
-      views: 32,
-      inquiries: 12,
-      image: image,
-    },
-    {
-      id: 4,
-      title: "Downtown Loft",
-      location: "Manhattan",
-      price: "$1,200,000",
-      status: "Pending",
-      views: 32,
-      inquiries: 12,
-      image: image,
-    },
-    {
-      id: 5,
-      title: "Downtown Loft",
-      location: "Manhattan",
-      price: "$1,200,000",
-      status: "Pending",
-      views: 32,
-      inquiries: 12,
-      image: image,
-    },
-  ];
-
   const location = useLocation().pathname;
   const navigate = useNavigate();
 
-  const { userDetails} = useSelector((state) => state.auth);
+  const [savedProperties, setSavedProperties] = React.useState([]);
+  const { token, userDetails } = useSelector((state) => state.auth);
+  React.useEffect(() => {
+    const fetchData = async () => {
+      if (userDetails?.role === "BUYER") {
+        const data = await getSavedProperties(userDetails?.id, token);
+        setSavedProperties(data);
+      }
+    };
 
+    fetchData();
+  }, [userDetails]);
+
+  console.log("savedProperties : ", savedProperties);
   return (
     <div className="bg-[#F9FAFB] min-h-screen ">
       <div className="w-11/12 mx-auto mt-50  space-y-10 ">
         {/* Welcome Section */}
         <div className="flex justify-between items-center">
           <div>
-            <h3 className="font-bold text-5xl ">Welcome back, {userDetails?.firstName}!</h3>
+            <h3 className="font-bold text-5xl ">
+              Welcome back, {userDetails?.firstName}!
+            </h3>
             <h6 className="text-gray-600 text-lg">
               {location === "/dashboard/seller"
                 ? "Manage your property listings"
@@ -114,62 +76,67 @@ export default function Dashboard() {
             </div>
             <div>
               <div class="flex flex-col gap-2 h-[80vh] overflow-y-auto">
-                {myProperties.map((property) => (
-                  <div class="p-4 flex items-center justify-between border border-gray-200 bg-gray-50 rounded-lg shadow-md  ">
-                    <div className="flex items-center gap-10">
-                      <img
-                        src={property.image}
-                        className="object-cover w-1/4 rounded-xl "
-                      />
-
-                      <div>
+                {savedProperties.length > 0 &&
+                  savedProperties?.map((property, index) => (
+                    <div
+                      key={index}
+                      class="p-4 grid grid-cols-6 gap-10 border border-gray-200 bg-gray-50 rounded-lg shadow-md  "
+                    >
+                      <div className="col-span-1 ">
+                        <img
+                          src={ property?.images?.length > 0 ? property?.images[0] : defaultImage}
+                          className="object-cover w-full aspect-square rounded-xl"
+                        />
+                      </div>
+                      <div className="col-span-4  flex flex-col justify-center -gap-10 ">
                         <div className="flex items-center gap-5 ">
                           <h3 className="text-2xl font-semibold max-w-100 ">
                             {property.title}
                           </h3>
-                          <Chip
-                            label={property.status}
-                            color={
-                              property.status === "Active"
-                                ? "success"
-                                : "warning"
-                            }
-                            size="large"
-                          />
+                          {userDetails?.role !== "BUYER" && (
+                            <Chip
+                              label={property.status}
+                              color={
+                                property.status === "ACTIVE"
+                                  ? "success"
+                                  : "warning"
+                              }
+                              size="large"
+                            />
+                          )}
                         </div>
-                        <p className="text-gray-600 max-w-100 ">
-                          {property.location}
+                        <p className="text-gray-600">
+                          {property?.address} {property?.city} {property?.state}
                         </p>
                         <p className="text-lg font-bold text-blue-600">
-                          {property.price}
+                          {property?.startingPrice.toLocaleString()}
                         </p>
                       </div>
-                    </div>
 
-                    <div className=" flex flex-col gap-5">
-                      {location === "/dashboard/seller" && (
+                      <div className="col-span-1 justify-center flex flex-col gap-5">
+                        {location === "/dashboard/seller" && (
+                          <Button
+                            variant="outlined"
+                            size="medium"
+                            className="flex gap-2 items-center bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 shadow-md hover:shadow-lg transition-all duration-200 "
+                          >
+                            <span className="text-white font-semibold ">
+                              Edit
+                            </span>
+                            <ModeEditOutlineIcon className="text-white" />
+                          </Button>
+                        )}
                         <Button
                           variant="outlined"
                           size="medium"
-                          className="flex gap-2 items-center bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 shadow-md hover:shadow-lg transition-all duration-200 "
+                          className="flex gap-2 items-center bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white shadow-md hover:shadow-lg transition-all duration-200 "
                         >
-                          <span className="text-white font-semibold ">
-                            Edit
-                          </span>
-                          <ModeEditOutlineIcon className="text-white" />
+                          <span className="text-white font-semibold">View</span>
+                          <VisibilityIcon className="text-white" />
                         </Button>
-                      )}
-                      <Button
-                        variant="outlined"
-                        size="medium"
-                        className="flex gap-2 items-center bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white shadow-md hover:shadow-lg transition-all duration-200 "
-                      >
-                        <span className="text-white font-semibold">View</span>
-                        <VisibilityIcon className="text-white" />
-                      </Button>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
               </div>
             </div>
 
