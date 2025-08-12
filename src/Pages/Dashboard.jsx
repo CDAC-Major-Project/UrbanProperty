@@ -4,28 +4,32 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import { Button, Chip } from "@mui/material";
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { getSavedProperties } from "../Services/propertiesAPI";
-import defaultImage from "../assets/Images/defaultHouseImage.jpeg"
+import defaultImage from "../assets/Images/defaultHouseImage.jpeg";
+import CircularProgress from "@mui/material/CircularProgress";
+import { setSavedBuyerProperties } from "../slices/PropertiesSlice";
 
 export default function Dashboard() {
   const location = useLocation().pathname;
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const [savedProperties, setSavedProperties] = React.useState([]);
   const { token, userDetails } = useSelector((state) => state.auth);
+
   React.useEffect(() => {
     const fetchData = async () => {
       if (userDetails?.role === "BUYER") {
         const data = await getSavedProperties(userDetails?.id, token);
         setSavedProperties(data);
+        dispatch(setSavedBuyerProperties(data));
       }
     };
 
     fetchData();
   }, [userDetails]);
 
-  console.log("savedProperties : ", savedProperties);
   return (
     <div className="bg-[#F9FAFB] min-h-screen ">
       <div className="w-11/12 mx-auto mt-50  space-y-10 ">
@@ -76,7 +80,7 @@ export default function Dashboard() {
             </div>
             <div>
               <div class="flex flex-col gap-2 h-[80vh] overflow-y-auto">
-                {savedProperties.length > 0 &&
+                {savedProperties.length > 0 ? (
                   savedProperties?.map((property, index) => (
                     <div
                       key={index}
@@ -84,7 +88,11 @@ export default function Dashboard() {
                     >
                       <div className="col-span-1 ">
                         <img
-                          src={ property?.images?.length > 0 ? property?.images[0] : defaultImage}
+                          src={
+                            property?.images?.length > 0
+                              ? property?.images[0]
+                              : defaultImage
+                          }
                           className="object-cover w-full aspect-square rounded-xl"
                         />
                       </div>
@@ -136,18 +144,26 @@ export default function Dashboard() {
                         </Button>
                       </div>
                     </div>
-                  ))}
+                  ))
+                ) : (
+                  <div className="border h-full flex items-center justify-center " ><CircularProgress  sx={{color:"#000000"}} size={100} /></div>
+                )}
               </div>
             </div>
 
-            <button
+            {/* <button
               type="button"
               className=" cursor-pointer w-full py-2 text-white font-semibold rounded-xl bg-black hover:bg-[#181818] shadow-md hover:shadow-lg transition-all duration-200 "
+              onClick={() => {
+                if (userDetails?.role === "BUYER") {
+                  navigate("/properties/saved");
+                }
+              }}
             >
               {location === "/dashboard/seller"
                 ? "View All Properties"
                 : "View All Saved Properties"}
-            </button>
+            </button> */}
           </div>
         </div>
       </div>

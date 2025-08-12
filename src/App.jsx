@@ -36,7 +36,6 @@ function App() {
         <Route path="/seller/list-property" element={<ListProperty />} />
         <Route path="/profile" element={<UserProfile />} />
         <Route path="/properties" element={<BrowseAllProperties />} />
-        <Route path="/properties/saved" element={<BrowseAllProperties />} />
         <Route path="/property/:id" element={<PropertyDetails />} />
         <Route element={<AdminDashboard />} >
           <Route path="/admin" element={<Analytics />} />

@@ -47,7 +47,6 @@ const Navbar = () => {
                         {
                             token !== null && userDetails !== null && userDetails?.role === "BUYER" && <div className="text-white font-semibold space-x-5 text-xl flex flex-row items-center" >
                                 <li onClick={() => navigate("/properties")} className='cursor-pointer flex flex-col group ' >Browse<span className={` ${ location === "/properties" ? "bg-red-500 h-0.5" : "group-hover:bg-red-500 h-0.5"} `} ></span></li>
-                                <li onClick={() => navigate("/properties/saved")} className='cursor-pointer flex flex-col group ' >Saved<span className={` ${ location === "/properties/saved" ? "bg-red-500 h-0.5" : "group-hover:bg-red-500 h-0.5"} `} ></span></li>
                             </div>
                         }
                         <li className='cursor-pointer flex flex-col group ' >About Us <span className={` ${location === "/" ? "bg-red-500 h-0.5" : "group-hover:bg-red-500 h-0.5"} `} ></span></li>
