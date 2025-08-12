@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import Logo from "../../assets/logos/logo.png"
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useSelector } from "react-redux";
@@ -14,6 +14,20 @@ const Navbar = () => {
     const {token, userDetails} = useSelector((state) => state.auth);
 
     const [isDropDownOpen, setIsDropDownOpen] = React.useState(false);
+
+    // ref to profile icon
+    const dialogRef = useRef(null);
+
+    const closeOnClickOutSide = (e) => {
+        if(isDropDownOpen && dialogRef.current && !dialogRef.current.contains(e.target)){
+            setIsDropDownOpen(false);
+        }
+    }
+
+    React.useEffect(() => {
+        document.addEventListener('mousedown', closeOnClickOutSide);
+        return () => document.removeEventListener('mousedown', closeOnClickOutSide);
+    }, [isDropDownOpen])
 
   return (
     <div className={`absolute left-1/2 -translate-x-1/2 z-30 w-full ${location != "/" && "bg-[#303087]"} `}>
@@ -42,13 +56,13 @@ const Navbar = () => {
                             {userDetails?.role}
                         </div>
 
-                        <div className="relative" >
+                        <div className="relative" ref={dialogRef} >
                             <div onClick={() => setIsDropDownOpen((prev) => !prev)} >
                                 <AccountCircleOutlinedIcon sx={{color:"#FFFFFF"}} fontSize="large" className="cursor-pointer" />
                             </div>
                             {
                                 isDropDownOpen && <div className="absolute top-10 right-0 bg-[#2C333F] text-[#eff0f1] border border-[#7d8083] rounded-md" >
-                                    <div className=" py-2 text-sm px-5 flex items-center gap-1 hover:bg-gray-500 cursor-pointer " > <PermIdentityOutlinedIcon fontSize="small" /> Profile</div>
+                                    <div onClick={() => {navigate("/profile"); setIsDropDownOpen(false)}} className=" py-2 text-sm px-5 flex items-center gap-1 hover:bg-gray-500 cursor-pointer " > <PermIdentityOutlinedIcon fontSize="small" /> Profile</div>
                                     <div className="h-0.5 bg-[#7d8083] w-full " ></div>
                                     <div className=" py-2  text-sm px-5 flex items-center gap-1 hover:bg-gray-500 cursor-pointer" > <LogoutOutlinedIcon fontSize="small" /> Logout</div>
                                 </div>
