@@ -1,15 +1,17 @@
 import React, { useRef } from "react";
 import Logo from "../../assets/logos/logo.png"
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
 import PermIdentityOutlinedIcon from '@mui/icons-material/PermIdentityOutlined';
+import { logout } from "../../Services/authAPI";
 
 const Navbar = () => {
 
     const navigate = useNavigate();
     const location = useLocation().pathname;
+    const dispatch = useDispatch();
 
     const {token, userDetails} = useSelector((state) => state.auth);
 
@@ -64,7 +66,7 @@ const Navbar = () => {
                                 isDropDownOpen && <div className="absolute top-10 right-0 bg-[#2C333F] text-[#eff0f1] border border-[#7d8083] rounded-md" >
                                     <div onClick={() => {navigate("/profile"); setIsDropDownOpen(false)}} className=" py-2 text-sm px-5 flex items-center gap-1 hover:bg-gray-500 cursor-pointer " > <PermIdentityOutlinedIcon fontSize="small" /> Profile</div>
                                     <div className="h-0.5 bg-[#7d8083] w-full " ></div>
-                                    <div className=" py-2  text-sm px-5 flex items-center gap-1 hover:bg-gray-500 cursor-pointer" > <LogoutOutlinedIcon fontSize="small" /> Logout</div>
+                                    <div onClick={() => logout(navigate, dispatch)} className=" py-2  text-sm px-5 flex items-center gap-1 hover:bg-gray-500 cursor-pointer" > <LogoutOutlinedIcon fontSize="small" /> Logout</div>
                                 </div>
                             }
                         </div>
