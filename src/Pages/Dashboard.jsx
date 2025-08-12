@@ -138,6 +138,7 @@ export default function Dashboard() {
                           variant="outlined"
                           size="medium"
                           className="flex gap-2 items-center bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white shadow-md hover:shadow-lg transition-all duration-200 "
+                          onClick={() => navigate(`/property/${property?.id}`)}
                         >
                           <span className="text-white font-semibold">View</span>
                           <VisibilityIcon className="text-white" />
