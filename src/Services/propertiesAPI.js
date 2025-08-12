@@ -51,3 +51,23 @@ export const getPropertyById = async (propertyId, setPropertyDetail) => {
   }
   toast.dismiss(loading);
 };
+
+
+export const getAllProperties = async (setProperties) => {
+  const loading = toast.loading("Loading...");
+  try{
+    const response = await axios.get(`${baseURL}/properties`);
+    if (response?.status !== 200) {
+      throw new Error(
+        "Something went wront in fetching All properties"
+      );
+    }
+    console.log("res : ", response?.data);
+    setProperties(response?.data);
+    toast.success("Fetched Properties");
+  }catch(err){
+    console.log("Error : ", err);
+    toast.error("Properties not found");
+  }
+  toast.dismiss(loading);
+}

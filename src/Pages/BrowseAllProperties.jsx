@@ -17,150 +17,10 @@ import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import PlaceOutlinedIcon from "@mui/icons-material/PlaceOutlined";
 import Button from "@mui/material/Button";
 import { useDebounce } from "use-debounce";
+import { getAllProperties } from "../Services/propertiesAPI";
+import coverPhoto from '../assets/Images/defaultimage .jpeg';
 
 const BrowseAllProperties = () => {
-  const properties = [
-    {
-      title: "Modern Villa with Pool",
-      price: 2500000,
-      location: "Beverly Hills, CA",
-      beds: 5,
-      baths: 4,
-      area_sqft: 4200,
-      actions: {
-        view_details: true,
-        contact: true,
-      },
-      photo: Picture1,
-      property_type: "residential",
-    },
-    {
-      title: "Luxury Apartment Downtown",
-      price: 1750000,
-      location: "Los Angeles, CA",
-      beds: 3,
-      baths: 2,
-      area_sqft: 2800,
-      actions: {
-        view_details: true,
-        contact: true,
-      },
-      photo: Picture2,
-      property_type: "residential",
-    },
-    {
-      title: "Cozy Cottage Retreat",
-      price: 950000,
-      location: "Napa Valley, CA",
-      beds: 2,
-      baths: 2,
-      area_sqft: 1800,
-      actions: {
-        view_details: true,
-        contact: true,
-      },
-      photo: Picture3,
-      property_type: "agricultural",
-    },
-    {
-      title: "Beachfront Mansion",
-      price: 4900000,
-      location: "Malibu, CA",
-      beds: 6,
-      baths: 5,
-      area_sqft: 5600,
-      actions: {
-        view_details: true,
-        contact: true,
-      },
-      photo: Picture4,
-      property_type: "agricultural",
-    },
-    {
-      title: "Urban Penthouse Suite",
-      price: 3200000,
-      location: "New York, NY",
-      beds: 4,
-      baths: 3,
-      area_sqft: 3500,
-      actions: {
-        view_details: true,
-        contact: true,
-      },
-      photo: Picture5,
-      property_type: "commercial",
-    },
-    {
-      title: "Suburban Family Home",
-      price: 1150000,
-      location: "Austin, TX",
-      beds: 4,
-      baths: 3,
-      area_sqft: 3000,
-      actions: {
-        view_details: true,
-        contact: true,
-      },
-      photo: Picture6,
-      property_type: "industrial",
-    },
-    {
-      title: "Golf Course Villa",
-      price: 2100000,
-      location: "Scottsdale, AZ",
-      beds: 5,
-      baths: 4,
-      area_sqft: 4100,
-      actions: {
-        view_details: true,
-        contact: true,
-      },
-      photo: Picture7,
-      property_type: "residential",
-    },
-    {
-      title: "Lake House Escape",
-      price: 1650000,
-      location: "Lake Tahoe, NV",
-      beds: 3,
-      baths: 2,
-      area_sqft: 2600,
-      actions: {
-        view_details: true,
-        contact: true,
-      },
-      photo: Picture1,
-      property_type: "agricultural",
-    },
-    {
-      title: "Mountain View Chalet",
-      price: 2700000,
-      location: "Aspen, CO",
-      beds: 4,
-      baths: 3,
-      area_sqft: 3700,
-      actions: {
-        view_details: true,
-        contact: true,
-      },
-      photo: Picture2,
-      property_type: "commercial",
-    },
-    {
-      title: "Eco-Friendly Smart Home",
-      price: 1300000,
-      location: "Portland, OR",
-      beds: 3,
-      baths: 3,
-      area_sqft: 2400,
-      actions: {
-        view_details: true,
-        contact: true,
-      },
-      photo: Picture3,
-      property_type: "industrial",
-    },
-  ];
 
   const [filterPropertyType, setFilterPropertyType] = React.useState("");
   const [filterPropertyByName, setFilterPropertyByName] = React.useState("");
@@ -170,7 +30,16 @@ const BrowseAllProperties = () => {
   );
   const [filterPropertyByPrice, setFilterPropertyByPrice] = React.useState("");
 
+  const [properties, setProperties] = React.useState([]);
   const [displayProperties, setDisplayProperties] = React.useState(properties);
+
+  React.useEffect(() => {
+    getAllProperties(setProperties);
+  }, []);
+
+  React.useEffect(() => {
+    setDisplayProperties(properties)
+  }, [properties])
 
   // filter properies on the based on Price Range
   React.useEffect(() => {
@@ -183,7 +52,7 @@ const BrowseAllProperties = () => {
       const maxPrice = rangeArray?.length > 0 && parseInt(rangeArray[1]);
 
       const filteredProperties = displayProperties?.filter((property) => {
-        if (property?.price >= minPrice && property?.price <= maxPrice) {
+        if (property?.startingPrice >= minPrice && property?.startingPrice <= maxPrice) {
           return property;
         }
       });
@@ -212,7 +81,7 @@ const BrowseAllProperties = () => {
       setDisplayProperties(properties);
     } else {
       const filteredProperties = properties?.filter(
-        (property) => property?.property_type === filterPropertyType
+        (property) => property?.propertyType?.name === filterPropertyType
       );
       setDisplayProperties(filteredProperties);
     }
@@ -252,7 +121,6 @@ const BrowseAllProperties = () => {
               <MenuItem value="">Property Type</MenuItem>
               <MenuItem value={"residential"}>Residential</MenuItem>
               <MenuItem value={"commercial"}>Commercial</MenuItem>
-              <MenuItem value={"agricultural"}>Agricultural</MenuItem>
               <MenuItem value={"industrial"}>Industrial</MenuItem>
             </Select>
 
@@ -278,7 +146,7 @@ const BrowseAllProperties = () => {
 
         {/* property cards */}
         <div className=" min-h-screen grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6 ">
-          {displayProperties?.map((property, index) => (
+          { displayProperties.length > 0 && displayProperties?.map((property, index) => (
             <div
               key={index}
               className=" h-fit relative border border-gray-400 rounded-2xl hover:shadow-2xl "
@@ -291,7 +159,7 @@ const BrowseAllProperties = () => {
               {/* property image */}
               <div className="overflow-hidden rounded-t-2xl min-w-full ">
                 <img
-                  src={property.photo}
+                  src={property?.images?.length > 0 ? property?.images[0] : coverPhoto}
                   className=" cursor-pointer hover:scale-[110%] duration-150 rounded-t-2xl object-cover w-full aspect-video"
                 />
               </div>
@@ -300,24 +168,24 @@ const BrowseAllProperties = () => {
               <div className="p-4 space-y-1 ">
                 <h2 className="font-semibold text-lg ">{property?.title}</h2>
                 <h3 className="font-semibold text-xl text-[#303087]">
-                  ₹ {property?.price.toLocaleString("en-IN")}
+                  ₹ {property?.startingPrice?.toLocaleString("en-IN")}
                 </h3>
-                <p className="text-[#5b626b] flex items-center gap-1 -ml-1 ">
+                <p className="text-[#5b626b] flex items-start gap-1 -ml-1 ">
                   {" "}
-                  <PlaceOutlinedIcon fontSize="small" /> {property?.location}
+                  <PlaceOutlinedIcon fontSize="small" className="mt-0.5" /> {property?.address}, {property?.city}, {property?.state}
                 </p>
                 <div className="grid grid-cols-3">
                   <div className="text-nowrap flex items-center gap-1">
                     <LocalHotelOutlinedIcon />
-                    <span>{property?.beds} Beds</span>
+                    <span>{"..."} Beds</span>
                   </div>
                   <div className="text-nowrap flex items-center gap-1">
                     <BathtubOutlinedIcon />
-                    <span>{property?.baths} Baths</span>
+                    <span>{"..."} Baths</span>
                   </div>
                   <div className="text-nowrap flex items-center gap-1">
                     <MapOutlinedIcon />
-                    <span>{property?.area_sqft} sqft</span>
+                    <span>{"..."} sqft</span>
                   </div>
                 </div>
 
