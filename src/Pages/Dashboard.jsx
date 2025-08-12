@@ -9,21 +9,25 @@ import { getSavedProperties } from "../Services/propertiesAPI";
 import defaultImage from "../assets/Images/defaultHouseImage.jpeg";
 import CircularProgress from "@mui/material/CircularProgress";
 import { setSavedBuyerProperties } from "../slices/PropertiesSlice";
+import { getMyProperties } from "../Services/propertiesAPI";
 
 export default function Dashboard() {
   const location = useLocation().pathname;
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const [savedProperties, setSavedProperties] = React.useState([]);
+  const [displayProperties, setDisplayProperties] = React.useState([]);
   const { token, userDetails } = useSelector((state) => state.auth);
 
   React.useEffect(() => {
     const fetchData = async () => {
       if (userDetails?.role === "BUYER") {
         const data = await getSavedProperties(userDetails?.id, token);
-        setSavedProperties(data);
+        setDisplayProperties(data);
         dispatch(setSavedBuyerProperties(data));
+      }else{
+        const data = await getMyProperties();
+        setDisplayProperties(data);
       }
     };
 
@@ -80,8 +84,8 @@ export default function Dashboard() {
             </div>
             <div>
               <div class="flex flex-col gap-2 h-[80vh] overflow-y-auto">
-                {savedProperties.length > 0 ? (
-                  savedProperties?.map((property, index) => (
+                {displayProperties?.length > 0 ? (
+                  displayProperties?.map((property, index) => (
                     <div
                       key={index}
                       class="p-4 grid grid-cols-6 gap-10 border border-gray-200 bg-gray-50 rounded-lg shadow-md  "

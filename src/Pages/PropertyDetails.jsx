@@ -10,35 +10,18 @@ import { useParams } from 'react-router-dom';
 import { getPropertyById } from '../Services/propertiesAPI';
 import coverPhoto from '../assets/Images/defaultimage .jpeg';
 
-const property = {
-      title: "Modern Villa with Pool",
-      price: 2500000,
-      location: "Beverly Hills, CA",
-      beds: 5,
-      baths: 4,
-      area_sqft: 4200,
-      actions: {
-        view_details: true,
-        contact: true,
-      },
-      photo: Picture1,
-      property_type: "residential",
-    };
 
 const PropertyDetails = () => {
 
   const {id} = useParams();
 
     const [propertyDetail, setPropertyDetail] = React.useState(null);
-
-    console.log("propertyDetail : ", propertyDetail);
+    console.log("propertyDetail : ", propertyDetail)
   React.useEffect(() => {
     if(id !== null){
         getPropertyById(id, setPropertyDetail);
     }
   }, [id])
-
-  const randomNumber = Math.floor(Math.random() * (5000 - 500 + 1)) + 500;
 
   return (
     <div className='w-full h-min-screen bg-[#F9FAFB] ' >
@@ -54,7 +37,7 @@ const PropertyDetails = () => {
                 {/* property price */}
                 <div className='flex flex-col items-end' >
                     <h2 className='text-3xl font-semibold text-white'>₹{propertyDetail?.startingPrice.toLocaleString()}</h2>
-                    <p className='font-semibold text-white'>{randomNumber.toLocaleString()} sqft</p>
+                    <p className='font-semibold text-white'>{propertyDetail?.details?.sizeSqft} sqft</p>
                 </div>
             </div>
         </div>
@@ -66,28 +49,28 @@ const PropertyDetails = () => {
                         <div className='col-span-1 flex  space-x-5 ' >
                             <LocalHotelOutlinedIcon className='text-[#155DFC]' fontSize='large' />
                             <div>
-                                <p className='text-3xl font-bold' >{property?.beds}</p>
+                                <p className='text-3xl font-bold' >{propertyDetail?.details?.numBedrooms}</p>
                                 <p>Bedrooms</p>
                             </div>
                         </div>
                         <div className='col-span-1 flex space-x-5 ' >
                             <BathtubOutlinedIcon className='text-[#155DFC]' fontSize='large' />
                             <div>
-                                <p className='text-3xl font-bold' >{property?.baths}</p>
+                                <p className='text-3xl font-bold' >{propertyDetail?.details?.numBathrooms}</p>
                                 <p>Bathrooms</p>
                             </div>
                         </div>
                         <div className='col-span-1 flex space-x-5 ' >
                             <MapOutlinedIcon className='text-[#155DFC]' fontSize='large' />
                             <div>
-                                <p className='text-3xl font-bold' >{property?.area_sqft}</p>
+                                <p className='text-3xl font-bold' >{propertyDetail?.details?.sizeSqft}</p>
                                 <p>Sq Ft</p>
                             </div>
                         </div>
                         <div className='col-span-1 flex space-x-5 ' >
                             <CalendarTodayIcon className='text-[#155DFC]' fontSize='large' />
                             <div>
-                                <p className='text-3xl font-bold' >2019</p>
+                                <p className='text-3xl font-bold' >{propertyDetail?.details?.buildYear}</p>
                                 <p>Year Built</p>
                             </div>
                         </div>
@@ -106,7 +89,7 @@ const PropertyDetails = () => {
 
                     <p className='text-lg font-medium text-center text-black' >Interested in this property?</p>
                     <p className='text-center text-[#00A63E] font-bold text-3xl' >₹{propertyDetail?.startingPrice.toLocaleString()}</p>
-                    <p className='text-center text-gray-500' >₹{property?.area_sqft}/sqft</p>
+                    <p className='text-center text-gray-500' >{propertyDetail?.details?.sizeSqft} sqft</p>
                     <p className='w-full border-t-2 border-gray-400 my-3'></p>
                     <Button 
                         variant='contained' 

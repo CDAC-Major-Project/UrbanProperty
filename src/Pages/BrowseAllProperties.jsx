@@ -19,8 +19,11 @@ import Button from "@mui/material/Button";
 import { useDebounce } from "use-debounce";
 import { getAllProperties } from "../Services/propertiesAPI";
 import coverPhoto from '../assets/Images/defaultimage .jpeg';
+import { useNavigate } from "react-router-dom";
 
 const BrowseAllProperties = () => {
+
+  const navigate = useNavigate();
 
   const [filterPropertyType, setFilterPropertyType] = React.useState("");
   const [filterPropertyByName, setFilterPropertyByName] = React.useState("");
@@ -198,6 +201,7 @@ const BrowseAllProperties = () => {
                       "&:hover": { bgcolor: "#1B1B1B" },
                     }}
                     className="w-full"
+                    onClick={() => navigate(`/property/${property?.id}`)}
                   >
                     <span className="font-semibold">View Details</span>
                   </Button>
