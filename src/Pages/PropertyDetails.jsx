@@ -8,7 +8,7 @@ import BathtubOutlinedIcon from "@mui/icons-material/BathtubOutlined";
 import MapOutlinedIcon from "@mui/icons-material/MapOutlined";
 import { useParams } from 'react-router-dom';
 import { getPropertyById } from '../Services/propertiesAPI';
-import coverPhoto from '../assets/Images/defaultImage.jpg';
+import coverPhoto from '../assets/Images/defaultimage .jpeg';
 
 const property = {
       title: "Modern Villa with Pool",
