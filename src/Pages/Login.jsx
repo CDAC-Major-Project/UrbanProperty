@@ -10,6 +10,9 @@ import { useDispatch } from "react-redux";
 import { setToken, setUserDetails } from "../slices/authSlice";
 
 const Login = () => {
+
+  const baseURL = import.meta.env.VITE_BASE_URL;
+  
   const [formData, setFormData] = React.useState({
     email: "",
     password: "",
@@ -37,7 +40,7 @@ const Login = () => {
     try {
       await validationSchema.validate(formData, { abortEarly: false });
       const response = await axios.post(
-        "http://192.168.2.119:8080/api/v1/users/login",
+        `${baseURL}/users/login`,
         formData
       );
       console.log("res ", response)

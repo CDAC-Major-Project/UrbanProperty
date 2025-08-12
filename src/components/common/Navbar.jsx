@@ -40,9 +40,15 @@ const Navbar = () => {
             <div className='' >
                 <nav>
                     <ul className=' text-white font-semibold space-x-5 text-xl flex flex-row items-center' >
-                        <li className='cursor-pointer flex flex-col group '>Home <span className={` ${location === "/" ? "bg-red-500 h-0.5" : "group-hover:bg-red-500 h-0.5"} `} ></span></li>
+                        <li onClick={() => navigate("/")} className='cursor-pointer flex flex-col group '>Home <span className={` ${location === "/" ? "bg-red-500 h-0.5" : "group-hover:bg-red-500 h-0.5"} `} ></span></li>
                         {
-                            token !== null && <li className='cursor-pointer flex flex-col group ' >Dashboard<span className={` ${( location === "/dashboard/seller" || location === "/dashboard/buyer" ) ? "bg-red-500 h-0.5" : "group-hover:bg-red-500 h-0.5"} `} ></span></li>
+                            token !== null && <li onClick={() => { userDetails?.role === "BUYER" ? navigate("/dashboard/buyer") : navigate("/dashboard/seller") }} className='cursor-pointer flex flex-col group ' >Dashboard<span className={` ${( location === "/dashboard/seller" || location === "/dashboard/buyer" ) ? "bg-red-500 h-0.5" : "group-hover:bg-red-500 h-0.5"} `} ></span></li>
+                        }
+                        {
+                            token !== null && userDetails !== null && userDetails?.role === "BUYER" && <div className="text-white font-semibold space-x-5 text-xl flex flex-row items-center" >
+                                <li onClick={() => navigate("/properties")} className='cursor-pointer flex flex-col group ' >Browse<span className={` ${ location === "/properties" ? "bg-red-500 h-0.5" : "group-hover:bg-red-500 h-0.5"} `} ></span></li>
+                                <li onClick={() => navigate("/properties/saved")} className='cursor-pointer flex flex-col group ' >Saved<span className={` ${ location === "/properties/saved" ? "bg-red-500 h-0.5" : "group-hover:bg-red-500 h-0.5"} `} ></span></li>
+                            </div>
                         }
                         <li className='cursor-pointer flex flex-col group ' >About Us <span className={` ${location === "/" ? "bg-red-500 h-0.5" : "group-hover:bg-red-500 h-0.5"} `} ></span></li>
                         <li className='cursor-pointer flex flex-col group ' >Contact Us <span className={` ${location === "/" ? "bg-red-500 h-0.5" : "group-hover:bg-red-500 h-0.5"} `} ></span></li>

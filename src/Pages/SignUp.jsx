@@ -9,6 +9,9 @@ import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined";
 import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
 
 const SignUp = () => {
+
+  const baseURL = import.meta.env.VITE_BASE_URL;
+
   const [userType, setUserType] = useState("BUYER");
   const navigate = useNavigate();
 
@@ -48,7 +51,7 @@ const SignUp = () => {
     try {
       await validationSchema.validate(formData, { abortEarly: false });
       const response = await axios.post(
-        "http://192.168.2.119:8080/api/v1/users/register",
+        `${baseURL}/users/register`,
         { ...formData, role: userType }
       );
 
