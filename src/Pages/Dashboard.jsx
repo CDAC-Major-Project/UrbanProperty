@@ -26,7 +26,7 @@ export default function Dashboard() {
         setDisplayProperties(data);
         dispatch(setSavedBuyerProperties(data));
       }else{
-        const data = await getMyProperties();
+        const data = await getMyProperties(userDetails?.id, token);
         setDisplayProperties(data);
       }
     };
@@ -55,7 +55,10 @@ export default function Dashboard() {
               onClick={() => navigate("/seller/list-property")}
               variant="outlined"
               size="medium"
-              className="flex gap-2 items-center bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 shadow-md hover:shadow-lg transition-all duration-200 "
+              className="flex gap-2 items-center shadow-md hover:shadow-lg transition-all duration-200 "
+              sx={{bgcolor:"#000000", ":hover":{
+                bgcolor: "#1B1B1B"
+              }}}
             >
               <AddIcon className="text-white" />
               <span className="text-white font-semibold ">
@@ -102,7 +105,7 @@ export default function Dashboard() {
                       </div>
                       <div className="col-span-4  flex flex-col justify-center -gap-10 ">
                         <div className="flex items-center gap-5 ">
-                          <h3 className="text-2xl font-semibold max-w-100 ">
+                          <h3 className="text-2xl font-semibold max-w-150 ">
                             {property.title}
                           </h3>
                           {userDetails?.role !== "BUYER" && (

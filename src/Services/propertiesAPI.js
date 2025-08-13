@@ -41,10 +41,9 @@ export const getPropertyById = async (propertyId, setPropertyDetail) => {
       throw new Error(
         "Something went wront in fetching Perticular property Details"
       );
-    }    
+    }
     setPropertyDetail(response?.data);
     toast.success("Fetched Details");
-
   } catch (err) {
     toast.error("Property Not Found");
     console.log("error", err);
@@ -52,35 +51,91 @@ export const getPropertyById = async (propertyId, setPropertyDetail) => {
   toast.dismiss(loading);
 };
 
-
 // get all properties
 export const getAllProperties = async (setProperties) => {
   const loading = toast.loading("Loading...");
-  try{
+  try {
     const response = await axios.get(`${baseURL}/properties`);
     if (response?.status !== 200) {
-      throw new Error(
-        "Something went wront in fetching All properties"
-      );
+      throw new Error("Something went wront in fetching All properties");
     }
-    
+
     setProperties(response?.data);
     toast.success("Fetched Properties");
-  }catch(err){
+  } catch (err) {
     console.log("Error : ", err);
     toast.error("Properties not found");
   }
   toast.dismiss(loading);
-}
+};
 
 // Sellers My properties
-export const getMyProperties = async () => {
+export const getMyProperties = async (id, token) => {
+  let array = [];
   const loading = toast.loading("Loading...");
-  try{
-    // const response = await axios.get(`${baseURL}`);
-  }catch(err){
+  try {
+    const response = await axios.get(`${baseURL}/properties/seller/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "Application/json",
+      },
+    });
+
+    if (response?.status !== 200) {
+      throw new Error("Something went wront in fetching My properties");
+    }
+  
+    array = response?.data;
+    toast.success("Fetched Properties");
+  } catch (err) {
     console.log("Error : ", err);
     toast.error("Properties not found");
   }
   toast.dismiss(loading);
-}
+  return array;
+};
+
+// upload photo
+// export const uploadPhoto = async () => {
+//   const loading = toast.loading("Loading...");
+//   try {
+//     const response = axios.post(`${baseURL}/properties/${propertyId}/images`, {
+//       headers: {
+//         Authorization: `Bearer ${token}`,
+//         "Content-Type": "multipart/form-data",
+//       },
+//     });
+
+//     if (response?.status !== 200) {
+//       throw new Error("Something went wront in uploading image");
+//     }
+//     console.log("res : ", response);
+
+//     toast.success("Image Uploaded");
+//   } catch (err) {
+//     console.log("Error : ", err);
+//     toast.error("Could not upload");
+//   }
+//   toast.dismiss(loading);
+// };
+
+
+// get all property type
+export const getAllPropertyType = async (token, setPropertyType) => {
+  try{
+    const response = await axios.get(`${baseURL}/property-types`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "Application/json",
+      },
+    });
+
+    if (response?.status !== 200) {
+      throw new Error("Something went wront in fetching property type");
+    }    
+
+    setPropertyType(response?.data);
+  }catch(err){
+    console.log("Error : ", err)
+  }
+} 

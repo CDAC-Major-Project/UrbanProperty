@@ -4,15 +4,32 @@ import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import { Menu } from "@mui/material";
 import React from "react";
-import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import CloseIcon from "@mui/icons-material/Close";
+import { Button } from "@mui/material";
+import FileUploadIcon from "@mui/icons-material/FileUpload";
+import { getAllPropertyType } from "../Services/propertiesAPI";
+import { useSelector } from "react-redux";
+
+const obj = {
+  title: "",
+  description: "",
+  address: "",
+  city: "",
+  state: "",
+  zipCode: "",
+  startingPrice: null,
+  propertyTypeId: null,
+  amenityIds: [],
+  details: {
+    numBedrooms: null,
+    numBathrooms: null,
+    sizeSqft: null,
+    buildYear: null,
+  },
+};
 
 const ListProperty = () => {
-  const propertyTypeOptions = [
-    "Residential",
-    "Commercial",
-    // "Agricultural",
-    "Industrial",
-  ];
 
   const stateOptions = [
     "Andhra Pradesh",
@@ -45,34 +62,42 @@ const ListProperty = () => {
     "West Bengal",
   ];
 
+  const {token} = useSelector((state) => state.auth);
+
+  const [propertyType, setPropertyType] = React.useState(null);
+  const [formData, setFormData] = React.useState(obj);
+
+  console.log("formData : ", formData)
+
   const photoRef = React.useRef(null);
-  const [propertyImages, setPropertyImages] = React.useState([]);
-  const [previewImages, setPreviewImages] = React.useState([]);
-  console.log("previewImages : ", previewImages)
-  console.log("images -> ", propertyImages)
-  
+  const [propertyImages, setPropertyImages] = React.useState(null);
+  const [previewImages, setPreviewImages] = React.useState(null);
+  console.log("previewImages : ", previewImages);
+  console.log("images -> ", propertyImages);
 
   const previewImage = (e) => {
-    if(e.target.files){
-      [...e.target.files].forEach((file) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = (event) => {
-          setPreviewImages((prev) => [...prev, event.target.result]);
-        }
-
-      })
+    if (e?.target?.files && e?.target?.files[0]) {
+      const file = e?.target?.files[0];
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = (event) => {
+        setPreviewImages(event.target.result);
+      };
     }
-  }
+  };
 
   const imageHandler = (e) => {
-    if(e?.target?.files){
-      [...e.target.files].forEach((file) => {
-        setPropertyImages( (prev) =>  [...prev, { key: prev.length+1, image:file}])
-    })
-    previewImage(e)
+    if (e?.target?.files && e?.target?.files[0]) {
+      const file = e?.target?.files[0];
+      setPropertyImages(file);
+      previewImage(e);
     }
-  }
+  };
+
+  // get Property type
+  React.useEffect(() => {
+    getAllPropertyType(token, setPropertyType);
+  }, []);
 
   return (
     <div className="min-h-screen bg-[#F9FAFB]">
@@ -95,6 +120,62 @@ const ListProperty = () => {
             </p>
           </div>
 
+          {/* image */}
+          <div className=" flex items-center gap-5">
+            <div className="w-2/8">
+              {propertyImages !== null && previewImages !== null ? (
+                <div>
+                  <h3 className="text-medium text-black font-semibold">
+                    Selected Images
+                  </h3>
+                  <div className="relative w-full aspect-square">
+                    <img
+                      src={previewImages}
+                      className="object-cover rounded-2xl w-full h-full"
+                    />
+                    <div
+                      onClick={() => {
+                        setPropertyImages(null);
+                        setPreviewImages(null);
+                      }}
+                      className="p-1 cursor-pointer rounded-full bg-black/80 z-10 absolute top-2 right-2 "
+                    >
+                      <CloseIcon fontSize="medium" sx={{ color: "#FFFFFF" }} />
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    ref={photoRef}
+                    multiple
+                    className="hidden"
+                    onChange={(event) => imageHandler(event)}
+                  />
+
+                  <div
+                    className=" cursor-pointer border-2 border-dashed border-gray-300 rounded-lg  aspect-square w-full flex items-center justify-center"
+                    onClick={() => photoRef.current && photoRef.current.click()}
+                  >
+                    <div className="space-y-1">
+                      <div className=" w-fit mx-auto cursor-pointer border border-dashed border-black outline-none p-3 bg-gray-300  rounded-full ">
+                        <CloudUploadIcon />
+                      </div>
+                      <p className="text-sm text-gray-500">
+                        PNG, JPG up to 10MB
+                      </p>
+                      <p className="text-sm text-gray-500">
+                        Click to browse a file
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
           <div className="flex flex-col gap-4">
             {/* title and property type */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -103,8 +184,10 @@ const ListProperty = () => {
                   Property Title
                 </p>
                 <input
+                  value={formData?.title}
                   placeholder="Enter property title"
                   className="outline-none border border-gray-300 rounded-md p-2 w-full"
+                  onChange={(e) => setFormData((prev) => { return{...prev, title:e.target.value}})}
                 />
               </label>
 
@@ -114,20 +197,23 @@ const ListProperty = () => {
                 </p>
 
                 <Select
-                  // value={age}
+                  value={formData?.propertyTypeId}
                   // onChange={handleChange}
                   size="small"
                   className="w-full"
                   displayEmpty
                 >
-                  {propertyTypeOptions.map((type, index) => (
-                    <MenuItem key={index} value={type}>
-                      {type}
+                  {propertyType?.map((type) => (
+                    <MenuItem key={type?.id} value={type?.id}>
+                      {type?.name}
                     </MenuItem>
                   ))}
                 </Select>
               </label>
             </div>
+
+            {/* property type */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
 
             {/* Description */}
             <label>
@@ -185,52 +271,8 @@ const ListProperty = () => {
             </div>
           </div>
 
-          {/* image */}
-          <div className="space-y-6"> 
-            {
-              previewImages?.length > 0 && 
-              <div>
-                <h3 className="text-medium text-black font-semibold" >Selected Images</h3>
-                <div className={" grid grid-cols-4 gap-5 "} >
-                  {
-                    previewImages?.map((image, idx) => (
-                      <img key={idx} src={image} className="object-cover rounded-2xl h-[10rem]" />
-                    ))
-                  }
-                </div>
-              </div>
-            }
-            <input
-                type="file"
-                accept="image/*"
-                ref={photoRef}
-                multiple
-                className="hidden"
-                onChange={(event) => imageHandler(event)}
-            />
-            {
-              propertyImages?.length < 4 &&
-              <div 
-                className=" cursor-pointer border-2 border-dashed border-gray-300 rounded-lg p-8  space-y-2 text-center"
-                onClick={() => photoRef.current && photoRef.current.click() }
-            >
-              {/* <Upload className="h-12 w-12 text-gray-400 mx-auto mb-4" /> */}
-              <p className="text-gray-600">
-                Drag and drop your photos here, or click to browse
-              </p>
-              <p className="text-sm text-gray-500">PNG, JPG up to 10MB each, Max {4 - previewImages?.length} photo</p>
-              <div
-                className=" w-fit mx-auto cursor-pointer border border-dashed border-black outline-none p-3 bg-gray-300  rounded-full "
-               >
-                <CloudUploadIcon/>
-              </div>
-              </div>
-            }
-          </div>
-
           <button
             type="button"
-
             className=" cursor-pointer w-full py-2 text-white font-semibold bg-gradient-to-r from-black to-black hover:from-gray-900 hover:to-gray-900 shadow-md hover:shadow-lg transition-all duration-200"
           >
             Add Property

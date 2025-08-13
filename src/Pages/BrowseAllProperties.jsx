@@ -35,6 +35,7 @@ const BrowseAllProperties = () => {
 
   const [properties, setProperties] = React.useState([]);
   const [displayProperties, setDisplayProperties] = React.useState(properties);
+  const [propertyId, setPropertyId] = React.useState(null);
 
   React.useEffect(() => {
     getAllProperties(setProperties);
@@ -148,11 +149,11 @@ const BrowseAllProperties = () => {
         </div>
 
         {/* property cards */}
-        <div className=" min-h-screen grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6 ">
+        <div className=" min-h-screen grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
           { displayProperties.length > 0 && displayProperties?.map((property, index) => (
             <div
               key={index}
-              className=" h-fit relative border border-gray-400 rounded-2xl hover:shadow-2xl "
+              className=" h-fit relative border border-gray-400 rounded-2xl hover:shadow-2xl max-h-100 flex flex-col justify-between"
             >
               {/* like */}
               <div className="absolute top-2 right-2 bg-white z-50 rounded-md px-2.5 py-1.5 flex items-center justify-center cursor-pointer">
@@ -169,7 +170,7 @@ const BrowseAllProperties = () => {
 
               {/* property details */}
               <div className="p-4 space-y-1 ">
-                <h2 className="font-semibold text-lg ">{property?.title}</h2>
+                <h2 className="font-semibold text-lg ">{ (property?.title.length > 22 && property?.id !== propertyId ) ? (property?.title.slice(0, 22) + "..."): property?.title} { property?.title.length > 22 && <span onClick={() => propertyId !== null ? setPropertyId(null) : setPropertyId(property?.id)} className="text-xs cursor-pointer text-blue-900" > {property?.title.length > 22 && property?.id !== propertyId  ? "more" : "less"}</span>}</h2>
                 <h3 className="font-semibold text-xl text-[#303087]">
                   ₹ {property?.startingPrice?.toLocaleString("en-IN")}
                 </h3>
