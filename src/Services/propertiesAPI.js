@@ -81,7 +81,7 @@ export const getMyProperties = async (id, token) => {
       },
     });
 
-    if (response?.status !== 200) {
+    if (response?.status !== 201) {
       throw new Error("Something went wront in fetching My properties");
     }
   
@@ -94,31 +94,6 @@ export const getMyProperties = async (id, token) => {
   toast.dismiss(loading);
   return array;
 };
-
-// upload photo
-// export const uploadPhoto = async () => {
-//   const loading = toast.loading("Loading...");
-//   try {
-//     const response = axios.post(`${baseURL}/properties/${propertyId}/images`, {
-//       headers: {
-//         Authorization: `Bearer ${token}`,
-//         "Content-Type": "multipart/form-data",
-//       },
-//     });
-
-//     if (response?.status !== 200) {
-//       throw new Error("Something went wront in uploading image");
-//     }
-//     console.log("res : ", response);
-
-//     toast.success("Image Uploaded");
-//   } catch (err) {
-//     console.log("Error : ", err);
-//     toast.error("Could not upload");
-//   }
-//   toast.dismiss(loading);
-// };
-
 
 // get all property type
 export const getAllPropertyType = async (token, setPropertyType) => {
@@ -139,3 +114,50 @@ export const getAllPropertyType = async (token, setPropertyType) => {
     console.log("Error : ", err)
   }
 } 
+
+// get all amenities
+export const getAllAmenities = async (token, setAmenities) => {
+  try{
+    const response = await axios.get(`${baseURL}/amenities`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "Application/json",
+      },
+    })
+
+    if (response?.status !== 200) {
+      throw new Error("Something went wront in fetching Amenities");
+    }  
+    setAmenities(response?.data);
+  }catch(err){
+    console.log("Error : ", err)
+  }
+}
+
+// list property
+export const listProperty = async (form, token, setFormData, obj, setPropertyImages, setPreviewImages) => {
+  const loading = toast.loading("Loading...")
+  try{
+    const response = await axios.post(`${baseURL}/properties`, form,{
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
+      
+    })
+
+    if (response?.status !== 201) {
+      throw new Error("Something went wront in listing property");
+    }
+
+    console.log("Res : ", response);
+    toast.success("Property added Successfully");
+    setFormData(obj);
+    setPropertyImages(null);
+    setPreviewImages(null);
+  }catch(err){
+    toast.error("Could not list property");
+    console.log("Error:", err);
+  }
+  toast.dismiss(loading);
+}
