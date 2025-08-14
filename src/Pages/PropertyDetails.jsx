@@ -16,7 +16,7 @@ const PropertyDetails = () => {
   const {id} = useParams();
 
     const [propertyDetail, setPropertyDetail] = React.useState(null);
-    console.log("propertyDetail : ", propertyDetail)
+    
   React.useEffect(() => {
     if(id !== null){
         getPropertyById(id, setPropertyDetail);

@@ -1,80 +1,90 @@
+import React from "react";
+import {
+  getAllAmenities,
+  getAllPropertyType,
+} from "../../../Services/propertiesAPI";
+import { useSelector } from "react-redux";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
-import { Menu } from "@mui/material";
-import React from "react";
-import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-import CloseIcon from "@mui/icons-material/Close";
-import { Button } from "@mui/material";
-import FileUploadIcon from "@mui/icons-material/FileUpload";
-import { getAllPropertyType, getAllAmenities, listProperty } from "../Services/propertiesAPI";
-import { useSelector } from "react-redux";
 import AddIcon from "@mui/icons-material/Add";
 import ClearIcon from "@mui/icons-material/Clear";
 import * as yup from "yup";
+import CloseIcon from "@mui/icons-material/Close";
+import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
+import { useRef } from "react";
 
-const obj = {
-  title: "",
-  description: "",
-  address: "",
-  city: "",
-  state: "",
-  zipCode: "",
-  startingPrice: "",
-  propertyTypeId: null,
-  amenityIds: [],
-  details: {
-    numBedrooms: "",
-    numBathrooms: "",
-    sizeSqft: "",
-    buildYear: "",
-  },
-};
+const stateOptions = [
+  "Andhra Pradesh",
+  "Arunachal Pradesh",
+  "Assam",
+  "Bihar",
+  "Chhattisgarh",
+  "Goa",
+  "Gujarat",
+  "Haryana",
+  "Himachal Pradesh",
+  "Jharkhand",
+  "Karnataka",
+  "Kerala",
+  "Madhya Pradesh",
+  "Maharashtra",
+  "Manipur",
+  "Meghalaya",
+  "Mizoram",
+  "Nagaland",
+  "Odisha",
+  "Punjab",
+  "Rajasthan",
+  "Sikkim",
+  "Tamil Nadu",
+  "Telangana",
+  "Tripura",
+  "Uttar Pradesh",
+  "Uttarakhand",
+  "West Bengal",
+];
 
-const ListProperty = () => {
-  const stateOptions = [
-    "Andhra Pradesh",
-    "Arunachal Pradesh",
-    "Assam",
-    "Bihar",
-    "Chhattisgarh",
-    "Goa",
-    "Gujarat",
-    "Haryana",
-    "Himachal Pradesh",
-    "Jharkhand",
-    "Karnataka",
-    "Kerala",
-    "Madhya Pradesh",
-    "Maharashtra",
-    "Manipur",
-    "Meghalaya",
-    "Mizoram",
-    "Nagaland",
-    "Odisha",
-    "Punjab",
-    "Rajasthan",
-    "Sikkim",
-    "Tamil Nadu",
-    "Telangana",
-    "Tripura",
-    "Uttar Pradesh",
-    "Uttarakhand",
-    "West Bengal",
-  ];
+const EditProperty = ({ data, close }) => {
+  const obj = {
+    id:data?.id,
+    sellerId: data?.seller?.id,
+    title: data?.title,
+    description: data?.description,
+    address: data?.address,
+    city: data?.city,
+    state: data?.state,
+    zipCode: data?.zipCode,
+    startingPrice: data?.startingPrice,
+    propertyTypeId: data?.propertyType?.id,
+    amenityIds: data?.amenities?.map((amenity) => amenity?.id),
+    details: {
+      numBedrooms: data?.details?.numBedrooms,
+      numBathrooms: data?.details?.numBathrooms,
+      sizeSqft: data?.details?.sizeSqft,
+      buildYear: data?.details?.buildYear,
+    },
+  };
 
-  const { token, userDetails } = useSelector((state) => state.auth);
+  const { token } = useSelector((state) => state.auth);
 
   const [amenities, setAmenities] = React.useState([]);
   const [propertyType, setPropertyType] = React.useState(null);
   const [formData, setFormData] = React.useState(obj);
   const [errors, setErrors] = React.useState(null);
 
+  console.log("formData : ", formData);
+  console.log("data", data)
+
   const photoRef = React.useRef(null);
   const [propertyImages, setPropertyImages] = React.useState(null);
-  const [previewImages, setPreviewImages] = React.useState(null);
-  
+  console.log("property image : ", propertyImages);
+  const [previewImages, setPreviewImages] = React.useState(
+    data?.images?.length !== 0 ? data?.images[0] : null
+  );
+
   const previewImage = (e) => {
     if (e?.target?.files && e?.target?.files[0]) {
       const file = e?.target?.files[0];
@@ -94,106 +104,107 @@ const ListProperty = () => {
     }
   };
 
-  // get Property type
+  const editPopUpRef = useRef(null);
+
+  const closeOnClickOutSide = (e) => {
+
+    if(e.target.closest(".MuiPaper-root") || e.target.closest(".MuiAutocomplete-popper")){
+        return;
+    }
+
+    if (editPopUpRef.current && !editPopUpRef.current.contains(e.target)) {
+      close(null);
+    }
+  };
+
+  React.useEffect(() => {
+    document.addEventListener("mousedown", closeOnClickOutSide);
+    return () => document.removeEventListener("mousedown", closeOnClickOutSide);
+  }, []);
+
+  // amenity and property type
   React.useEffect(() => {
     getAllPropertyType(token, setPropertyType);
     getAllAmenities(token, setAmenities);
   }, []);
 
   // validation
-  const propertySchema = yup.object().shape({
-    image: yup.mixed().required("Image is required"),
-    title: yup.string().required("Title is required"),
-    description: yup.string().required("Description is required"),
-    address: yup.string().required("Address is required"),
-    city: yup.string().required("City is required"),
-    state: yup.string().required("State is required"),
-    zipCode: yup.number().required("Zipcode is required"),
-    startingPrice: yup
-      .number()
-      .typeError("Price must be a number")
-      .min(500, "Minimum price is 500")
-      .max(100000000, "Maximum price is 10 crore")
-      .required("Price is required"),
-    propertyTypeId: yup
-      .number()
-      .typeError("Select property type")
-      .required("Property type is required"),
-    amenityIds: yup
-      .array()
-      .of(yup.number())
-      .min(1, "Select at least one amenity"),
-    details: yup.object().shape({
-      numBedrooms: yup
+    const propertySchema = yup.object().shape({
+      image: yup.mixed().required("Image is required"),
+      title: yup.string().required("Title is required"),
+      description: yup.string().required("Description is required"),
+      address: yup.string().required("Address is required"),
+      city: yup.string().required("City is required"),
+      state: yup.string().required("State is required"),
+      zipCode: yup.number().required("Zipcode is required"),
+      startingPrice: yup
         .number()
-        .typeError("Enter number of bedrooms")
-        .min(1, "At least 1 bedroom")
-        .required("Number of bedrooms is required"),
-      numBathrooms: yup
+        .typeError("Price must be a number")
+        .min(500, "Minimum price is 500")
+        .max(100000000, "Maximum price is 10 crore")
+        .required("Price is required"),
+      propertyTypeId: yup
         .number()
-        .typeError("Enter number of bathrooms")
-        .min(1, "At least 1 bathroom")
-        .required("Number of bathrooms is required"),
-      sizeSqft: yup
-        .number()
-        .typeError("Enter size in sqft")
-        .min(100, "Minimum size is 100 sqft")
-        .required("Size is required"),
-      buildYear: yup
-        .number()
-        .typeError("Enter build year")
-        .min(1800, "Year must be after 1800")
-        .max(new Date().getFullYear(), "Year cannot be in the future")
-        .required("Build year is required"),
-    }),
-  });
+        .typeError("Select property type")
+        .required("Property type is required"),
+      amenityIds: yup
+        .array()
+        .of(yup.number())
+        .min(1, "Select at least one amenity"),
+      details: yup.object().shape({
+        numBedrooms: yup
+          .number()
+          .typeError("Enter number of bedrooms")
+          .min(1, "At least 1 bedroom")
+          .required("Number of bedrooms is required"),
+        numBathrooms: yup
+          .number()
+          .typeError("Enter number of bathrooms")
+          .min(1, "At least 1 bathroom")
+          .required("Number of bathrooms is required"),
+        sizeSqft: yup
+          .number()
+          .typeError("Enter size in sqft")
+          .min(100, "Minimum size is 100 sqft")
+          .required("Size is required"),
+        buildYear: yup
+          .number()
+          .typeError("Enter build year")
+          .min(1800, "Year must be after 1800")
+          .max(new Date().getFullYear(), "Year cannot be in the future")
+          .required("Build year is required"),
+      }),
+    });
 
-  // submit handler
-  const submitHandler = async () => {
-    try {
+  const editPropertyHandler = async () => {
+    try{
+        await propertySchema.validate({...formData, image: data?.images?.length !== 0 ?  : }, { abortEarly: false });
+    }catch(err){
 
-      await propertySchema.validate({...formData, image: propertyImages}, { abortEarly: false });
-
-      const form = new FormData();
-      form.append("image", propertyImages);
-      form.append("propertyData", JSON.stringify({...formData, sellerId: userDetails?.id}));
-
-      await listProperty(form, token, setFormData, obj, setPropertyImages, setPreviewImages);
-    } catch (err) {
-      console.log("Error at submitting the formData : ", err);
-      const errors = {};
-      err.inner.forEach((err) => {
-        errors[err.path] = err.message;
-      });
-      setErrors(errors);
     }
   };
 
   return (
-    <div className="min-h-screen bg-[#F9FAFB]">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className=" mt-40 mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            List New Property
-          </h1>
-          <p className="text-gray-600">
-            Fill in the details to list your property
-          </p>
-        </div>
-
-        <form className="border border-[#9b9baf] rounded-xl p-5 mb-10 bg-white space-y-6">
+    <div className=" fixed inset-0 bg-black/80 flex items-center justify-center z-50">
+      <div
+        ref={editPopUpRef}
+        className=" overflow-y-auto h-[95vh] border-2 rounded-lg border-red-300 max-w-4xl mx-auto"
+      >
+        <form className="p-5 bg-white space-y-6">
           {/* Basic Information */}
-          <div>
-            <h3 className="text-2xl font-semibold">Basic Information</h3>
-            <p className="text-medium text-gray-600">
-              Provide basic details about your property
-            </p>
+          <div className="flex items-center justify-between">
+            <h3 className="text-2xl font-semibold">Edit Property</h3>
+            <CloseOutlinedIcon
+              fontSize="large"
+              onClick={() => close(null)}
+              className="cursor-pointer"
+            />
           </div>
 
           {/* image */}
           <div className=" flex items-center gap-5">
             <div className="w-2/8">
-              {propertyImages !== null && previewImages !== null ? (
+              {previewImages !== null ? (
                 <div>
                   <h3 className="text-medium text-black font-semibold">
                     Selected Images
@@ -244,10 +255,10 @@ const ListProperty = () => {
 
                   <div>
                     {errors?.image && (
-                    <span className="font-semibold text-xs text-red-500">
-                      {errors?.image}
-                    </span>
-                  )}    
+                      <span className="font-semibold text-xs text-red-500">
+                        {errors?.image}
+                      </span>
+                    )}
                   </div>
                 </div>
               )}
@@ -285,7 +296,7 @@ const ListProperty = () => {
                 <p className="text-medium text-black font-semibold">
                   Property Type
                 </p>
-                
+
                 <div>
                   <Select
                     value={formData?.propertyTypeId}
@@ -296,7 +307,6 @@ const ListProperty = () => {
                     }
                     size="small"
                     className="w-full"
-                    displayEmpty
                   >
                     {propertyType?.map((type) => (
                       <MenuItem key={type?.id} value={type?.id}>
@@ -334,10 +344,10 @@ const ListProperty = () => {
                 />
 
                 {errors?.description && (
-                    <span className="font-semibold text-xs text-red-500">
-                      {errors?.description}
-                    </span>
-                  )}
+                  <span className="font-semibold text-xs text-red-500">
+                    {errors?.description}
+                  </span>
+                )}
               </div>
             </label>
 
@@ -358,10 +368,10 @@ const ListProperty = () => {
                 />
 
                 {errors?.address && (
-                    <span className="font-semibold text-xs text-red-500">
-                      {errors?.address}
-                    </span>
-                  )}
+                  <span className="font-semibold text-xs text-red-500">
+                    {errors?.address}
+                  </span>
+                )}
               </div>
             </label>
 
@@ -394,7 +404,6 @@ const ListProperty = () => {
                 <p className="text-medium text-black font-semibold">State</p>
                 <div>
                   <Autocomplete
-                    displayEmpty
                     options={stateOptions}
                     size="small"
                     renderInput={(params) => (
@@ -551,7 +560,7 @@ const ListProperty = () => {
                     <span className="font-semibold text-xs text-red-500">
                       {errors?.["details.numBathrooms"]}
                     </span>
-                  )}                    
+                  )}
                 </div>
               </label>
 
@@ -567,7 +576,10 @@ const ListProperty = () => {
                       setFormData((prev) => {
                         return {
                           ...prev,
-                          details: { ...prev?.details, sizeSqft: e.target.value },
+                          details: {
+                            ...prev?.details,
+                            sizeSqft: e.target.value,
+                          },
                         };
                       })
                     }
@@ -576,7 +588,7 @@ const ListProperty = () => {
                     <span className="font-semibold text-xs text-red-500">
                       {errors?.["details.sizeSqft"]}
                     </span>
-                  )} 
+                  )}
                 </div>
               </label>
             </div>
@@ -631,12 +643,12 @@ const ListProperty = () => {
                     </div>
                   ))}
                 </div>
-                
+
                 {errors?.amenityIds && (
-                    <span className="font-semibold text-xs text-red-500">
-                      {errors?.amenityIds}
-                    </span>
-                  )} 
+                  <span className="font-semibold text-xs text-red-500">
+                    {errors?.amenityIds}
+                  </span>
+                )}
               </div>
             </label>
           </div>
@@ -644,9 +656,9 @@ const ListProperty = () => {
           <button
             type="button"
             className=" cursor-pointer w-full py-2 text-white font-semibold bg-gradient-to-r from-black to-black hover:from-gray-900 hover:to-gray-900 shadow-md hover:shadow-lg transition-all duration-200"
-            onClick={() => submitHandler()}
+            onClick={() => editPropertyHandler()}
           >
-            Add Property
+            Edit Property
           </button>
         </form>
       </div>
@@ -654,4 +666,4 @@ const ListProperty = () => {
   );
 };
 
-export default ListProperty;
+export default EditProperty;

@@ -81,7 +81,7 @@ export const getMyProperties = async (id, token) => {
       },
     });
 
-    if (response?.status !== 201) {
+    if (response?.status !== 200) {
       throw new Error("Something went wront in fetching My properties");
     }
   
