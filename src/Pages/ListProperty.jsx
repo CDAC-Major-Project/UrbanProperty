@@ -8,8 +8,11 @@ import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import CloseIcon from "@mui/icons-material/Close";
 import { Button } from "@mui/material";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
-import { getAllPropertyType } from "../Services/propertiesAPI";
+import { getAllPropertyType, getAllAmenities, listProperty } from "../Services/propertiesAPI";
 import { useSelector } from "react-redux";
+import AddIcon from "@mui/icons-material/Add";
+import ClearIcon from "@mui/icons-material/Clear";
+import * as yup from "yup";
 
 const obj = {
   title: "",
@@ -18,19 +21,18 @@ const obj = {
   city: "",
   state: "",
   zipCode: "",
-  startingPrice: null,
+  startingPrice: "",
   propertyTypeId: null,
   amenityIds: [],
   details: {
-    numBedrooms: null,
-    numBathrooms: null,
-    sizeSqft: null,
-    buildYear: null,
+    numBedrooms: "",
+    numBathrooms: "",
+    sizeSqft: "",
+    buildYear: "",
   },
 };
 
 const ListProperty = () => {
-
   const stateOptions = [
     "Andhra Pradesh",
     "Arunachal Pradesh",
@@ -62,18 +64,16 @@ const ListProperty = () => {
     "West Bengal",
   ];
 
-  const {token} = useSelector((state) => state.auth);
+  const { token, userDetails } = useSelector((state) => state.auth);
 
+  const [amenities, setAmenities] = React.useState([]);
   const [propertyType, setPropertyType] = React.useState(null);
   const [formData, setFormData] = React.useState(obj);
-
-  console.log("formData : ", formData)
+  const [errors, setErrors] = React.useState(null);
 
   const photoRef = React.useRef(null);
   const [propertyImages, setPropertyImages] = React.useState(null);
   const [previewImages, setPreviewImages] = React.useState(null);
-  console.log("previewImages : ", previewImages);
-  console.log("images -> ", propertyImages);
 
   const previewImage = (e) => {
     if (e?.target?.files && e?.target?.files[0]) {
@@ -97,7 +97,77 @@ const ListProperty = () => {
   // get Property type
   React.useEffect(() => {
     getAllPropertyType(token, setPropertyType);
+    getAllAmenities(token, setAmenities);
   }, []);
+
+  // validation
+  const propertySchema = yup.object().shape({
+    image: yup.mixed().required("Image is required"),
+    title: yup.string().required("Title is required"),
+    description: yup.string().required("Description is required"),
+    address: yup.string().required("Address is required"),
+    city: yup.string().required("City is required"),
+    state: yup.string().required("State is required"),
+    zipCode: yup.number().required("Zipcode is required"),
+    startingPrice: yup
+      .number()
+      .typeError("Price must be a number")
+      .min(500, "Minimum price is 500")
+      .max(100000000, "Maximum price is 10 crore")
+      .required("Price is required"),
+    propertyTypeId: yup
+      .number()
+      .typeError("Select property type")
+      .required("Property type is required"),
+    amenityIds: yup
+      .array()
+      .of(yup.number())
+      .min(1, "Select at least one amenity"),
+    details: yup.object().shape({
+      numBedrooms: yup
+        .number()
+        .typeError("Enter number of bedrooms")
+        .min(1, "At least 1 bedroom")
+        .required("Number of bedrooms is required"),
+      numBathrooms: yup
+        .number()
+        .typeError("Enter number of bathrooms")
+        .min(1, "At least 1 bathroom")
+        .required("Number of bathrooms is required"),
+      sizeSqft: yup
+        .number()
+        .typeError("Enter size in sqft")
+        .min(100, "Minimum size is 100 sqft")
+        .required("Size is required"),
+      buildYear: yup
+        .number()
+        .typeError("Enter build year")
+        .min(1800, "Year must be after 1800")
+        .max(new Date().getFullYear(), "Year cannot be in the future")
+        .required("Build year is required"),
+    }),
+  });
+
+  // submit handler
+  const submitHandler = async () => {
+    try {
+
+      await propertySchema.validate({...formData, image: propertyImages}, { abortEarly: false });
+
+      const form = new FormData();
+      form.append("image", propertyImages);
+      form.append("propertyData", JSON.stringify({...formData, sellerId: userDetails?.id}));
+
+      await listProperty(form, token, setFormData, obj, setPropertyImages, setPreviewImages);
+    } catch (err) {
+      console.log("Error at submitting the formData : ", err);
+      const errors = {};
+      err.inner.forEach((err) => {
+        errors[err.path] = err.message;
+      });
+      setErrors(errors);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-[#F9FAFB]">
@@ -171,6 +241,14 @@ const ListProperty = () => {
                       </p>
                     </div>
                   </div>
+
+                  <div>
+                    {errors?.image && (
+                    <span className="font-semibold text-xs text-red-500">
+                      {errors?.image}
+                    </span>
+                  )}    
+                  </div>
                 </div>
               )}
             </div>
@@ -183,97 +261,390 @@ const ListProperty = () => {
                 <p className="text-medium text-black font-semibold">
                   Property Title
                 </p>
-                <input
-                  value={formData?.title}
-                  placeholder="Enter property title"
-                  className="outline-none border border-gray-300 rounded-md p-2 w-full"
-                  onChange={(e) => setFormData((prev) => { return{...prev, title:e.target.value}})}
-                />
+                <div>
+                  <input
+                    type="text"
+                    value={formData?.title}
+                    placeholder="Enter property title"
+                    className="outline-none border border-gray-300 rounded-md p-2 w-full"
+                    onChange={(e) =>
+                      setFormData((prev) => {
+                        return { ...prev, title: e.target.value };
+                      })
+                    }
+                  />
+                  {errors?.title && (
+                    <span className="font-semibold text-xs text-red-500">
+                      {errors?.title}
+                    </span>
+                  )}
+                </div>
               </label>
 
               <label>
                 <p className="text-medium text-black font-semibold">
                   Property Type
                 </p>
+                
+                <div>
+                  <Select
+                    value={formData?.propertyTypeId}
+                    onChange={(e) =>
+                      setFormData((prev) => {
+                        return { ...prev, propertyTypeId: e.target.value };
+                      })
+                    }
+                    size="small"
+                    className="w-full"
+                    displayEmpty
+                  >
+                    {propertyType?.map((type) => (
+                      <MenuItem key={type?.id} value={type?.id}>
+                        {type?.name}
+                      </MenuItem>
+                    ))}
+                  </Select>
 
-                <Select
-                  value={formData?.propertyTypeId}
-                  // onChange={handleChange}
-                  size="small"
-                  className="w-full"
-                  displayEmpty
-                >
-                  {propertyType?.map((type) => (
-                    <MenuItem key={type?.id} value={type?.id}>
-                      {type?.name}
-                    </MenuItem>
-                  ))}
-                </Select>
+                  {errors?.propertyTypeId && (
+                    <span className="font-semibold text-xs text-red-500">
+                      {errors?.propertyTypeId}
+                    </span>
+                  )}
+                </div>
               </label>
             </div>
-
-            {/* property type */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
 
             {/* Description */}
             <label>
               <p className="text-medium text-black font-semibold">
                 Description
               </p>
-              <textarea
-                placeholder="Describe your property in detail..."
-                rows={4}
-                className="outline-none border border-gray-300 rounded-md p-2 w-full"
-              />
+              <div>
+                <textarea
+                  type="text"
+                  placeholder="Describe your property in detail..."
+                  rows={4}
+                  className="outline-none border border-gray-300 rounded-md p-2 w-full"
+                  value={formData?.description}
+                  onChange={(e) =>
+                    setFormData((prev) => {
+                      return { ...prev, description: e.target.value };
+                    })
+                  }
+                />
+
+                {errors?.description && (
+                    <span className="font-semibold text-xs text-red-500">
+                      {errors?.description}
+                    </span>
+                  )}
+              </div>
             </label>
 
-            {/* price and address */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <label>
-                <p className="text-medium text-black font-semibold">Price</p>
+            {/* address */}
+            <label>
+              <p className="text-medium text-black font-semibold">Address</p>
+              <div>
                 <input
-                  placeholder="e.g., 2500000"
-                  type="number"
-                  className="outline-none border border-gray-300 rounded-md p-2 w-full"
-                />
-              </label>
-
-              <label>
-                <p className="text-medium text-black font-semibold">Address</p>
-                <input
+                  type="text"
                   placeholder="Enter property address"
                   className="outline-none border border-gray-300 rounded-md p-2 w-full"
+                  value={formData?.address}
+                  onChange={(e) =>
+                    setFormData((prev) => {
+                      return { ...prev, address: e.target.value };
+                    })
+                  }
                 />
-              </label>
-            </div>
+
+                {errors?.address && (
+                    <span className="font-semibold text-xs text-red-500">
+                      {errors?.address}
+                    </span>
+                  )}
+              </div>
+            </label>
 
             {/* City and State */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <label>
                 <p className="text-medium text-black font-semibold">City</p>
-                <input
-                  placeholder="Enter city"
-                  className="outline-none border border-gray-300 rounded-md p-2 w-full"
-                />
+                <div>
+                  <input
+                    type="text"
+                    placeholder="Enter city"
+                    className="outline-none border border-gray-300 rounded-md p-2 w-full"
+                    value={formData?.city}
+                    onChange={(e) =>
+                      setFormData((prev) => {
+                        return { ...prev, city: e.target.value };
+                      })
+                    }
+                  />
+
+                  {errors?.city && (
+                    <span className="font-semibold text-xs text-red-500">
+                      {errors?.city}
+                    </span>
+                  )}
+                </div>
               </label>
 
               <label>
                 <p className="text-medium text-black font-semibold">State</p>
-                <Autocomplete
-                  displayEmpty
-                  options={stateOptions}
-                  size="small"
-                  renderInput={(params) => (
-                    <TextField {...params} placeholder="Enter state" />
+                <div>
+                  <Autocomplete
+                    displayEmpty
+                    options={stateOptions}
+                    size="small"
+                    renderInput={(params) => (
+                      <TextField {...params} placeholder="Enter state" />
+                    )}
+                    value={formData?.state}
+                    onChange={(event, newValue) => {
+                      setFormData((prev) => ({ ...prev, state: newValue }));
+                    }}
+                  />
+
+                  {errors?.state && (
+                    <span className="font-semibold text-xs text-red-500">
+                      {errors?.state}
+                    </span>
                   )}
-                />
+                </div>
               </label>
             </div>
+
+            {/* price and buildyear */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <label>
+                <p className="text-medium text-black font-semibold">Price</p>
+                <div>
+                  <input
+                    placeholder="e.g., 2500000"
+                    type="number"
+                    className="outline-none border border-gray-300 rounded-md p-2 w-full"
+                    value={formData?.startingPrice}
+                    onChange={(e) =>
+                      setFormData((prev) => {
+                        return { ...prev, startingPrice: e.target.value };
+                      })
+                    }
+                  />
+                  {errors?.startingPrice && (
+                    <span className="font-semibold text-xs text-red-500">
+                      {errors?.startingPrice}
+                    </span>
+                  )}
+                </div>
+              </label>
+
+              <label>
+                <p className="text-medium text-black font-semibold">Build</p>
+                <div>
+                  <input
+                    type="number"
+                    placeholder="Enter build year"
+                    className="outline-none border border-gray-300 rounded-md p-2 w-full"
+                    value={formData?.details?.buildYear}
+                    onChange={(e) =>
+                      setFormData((prev) => {
+                        return {
+                          ...prev,
+                          details: {
+                            ...prev?.details,
+                            buildYear: e.target.value,
+                          },
+                        };
+                      })
+                    }
+                  />
+
+                  {errors?.["details.buildYear"] && (
+                    <span className="font-semibold text-xs text-red-500">
+                      {errors?.["details.buildYear"]}
+                    </span>
+                  )}
+                </div>
+              </label>
+            </div>
+
+            {/* zip code and Bedrooms */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <label>
+                <p className="text-medium text-black font-semibold">Zipcode</p>
+                <div>
+                  <input
+                    placeholder="Enter Zipcode"
+                    type="number"
+                    className="outline-none border border-gray-300 rounded-md p-2 w-full"
+                    value={formData?.zipCode}
+                    onChange={(e) =>
+                      setFormData((prev) => {
+                        return { ...prev, zipCode: e.target.value };
+                      })
+                    }
+                  />
+
+                  {errors?.zipCode && (
+                    <span className="font-semibold text-xs text-red-500">
+                      ZipCode is required
+                    </span>
+                  )}
+                </div>
+              </label>
+
+              <label>
+                <p className="text-medium text-black font-semibold">Bedroom</p>
+                <div>
+                  <input
+                    type="number"
+                    placeholder="Enter no. of Bedroom"
+                    className="outline-none border border-gray-300 rounded-md p-2 w-full"
+                    value={formData?.details?.numBedrooms}
+                    onChange={(e) =>
+                      setFormData((prev) => {
+                        return {
+                          ...prev,
+                          details: {
+                            ...prev?.details,
+                            numBedrooms: e.target.value,
+                          },
+                        };
+                      })
+                    }
+                  />
+
+                  {errors?.["details.numBedrooms"] && (
+                    <span className="font-semibold text-xs text-red-500">
+                      {errors?.["details.numBedrooms"]}
+                    </span>
+                  )}
+                </div>
+              </label>
+            </div>
+
+            {/* BathRoom and Size */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <label>
+                <p className="text-medium text-black font-semibold">Bathroom</p>
+                <div>
+                  <input
+                    placeholder="Enter no. of Bathroom"
+                    type="number"
+                    className="outline-none border border-gray-300 rounded-md p-2 w-full"
+                    value={formData?.details?.numBathrooms}
+                    onChange={(e) =>
+                      setFormData((prev) => {
+                        return {
+                          ...prev,
+                          details: {
+                            ...prev?.details,
+                            numBathrooms: e.target.value,
+                          },
+                        };
+                      })
+                    }
+                  />
+
+                  {errors?.["details.numBathrooms"] && (
+                    <span className="font-semibold text-xs text-red-500">
+                      {errors?.["details.numBathrooms"]}
+                    </span>
+                  )}                    
+                </div>
+              </label>
+
+              <label>
+                <p className="text-medium text-black font-semibold">Size</p>
+                <div>
+                  <input
+                    type="number"
+                    placeholder="Enter no. Size in Sqft"
+                    className="outline-none border border-gray-300 rounded-md p-2 w-full"
+                    value={formData?.details?.sizeSqft}
+                    onChange={(e) =>
+                      setFormData((prev) => {
+                        return {
+                          ...prev,
+                          details: { ...prev?.details, sizeSqft: e.target.value },
+                        };
+                      })
+                    }
+                  />
+                  {errors?.["details.sizeSqft"] && (
+                    <span className="font-semibold text-xs text-red-500">
+                      {errors?.["details.sizeSqft"]}
+                    </span>
+                  )} 
+                </div>
+              </label>
+            </div>
+
+            {/* amenities and buildyear */}
+            <label>
+              <p className="text-medium text-black font-semibold">Amenities</p>
+              <div>
+                <div className="flex items-start gap-2 flex-wrap  ">
+                  {amenities?.map((amenity, index) => (
+                    <div
+                      key={index}
+                      className={` cursor-pointer flex items-center gap-2 px-2 py-1 rounded-full border-4 transition-all duration-200 hover:shadow-lg focus:ring-2 ${
+                        formData?.amenityIds?.includes(amenity?.id)
+                          ? "bg-green-600 text-white border-green-300 hover:bg-green-500 focus:ring-green-500"
+                          : "bg-red-50 text-red-800 border-red-200 hover:bg-red-100 focus:ring-red-400"
+                      } `}
+                      onClick={() =>
+                        setFormData((prev) => {
+                          const amenityIds = Array.isArray(prev.amenityIds)
+                            ? prev.amenityIds
+                            : [];
+                          const alreadySelected = amenityIds?.includes(
+                            amenity?.id
+                          );
+                          return {
+                            ...prev,
+                            amenityIds: alreadySelected
+                              ? prev?.amenityIds?.filter(
+                                  (id) => id !== amenity?.id
+                                )
+                              : [
+                                  ...(Array.isArray(prev.amenityIds)
+                                    ? prev.amenityIds
+                                    : []),
+                                  amenity?.id,
+                                ],
+                          };
+                        })
+                      }
+                    >
+                      <p className="text-nowrap font-semibold ">
+                        {amenity?.name}
+                      </p>
+                      <div className="cursor-pointer">
+                        {formData?.amenityIds?.includes(amenity?.id) ? (
+                          <ClearIcon />
+                        ) : (
+                          <AddIcon />
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                
+                {errors?.amenityIds && (
+                    <span className="font-semibold text-xs text-red-500">
+                      {errors?.amenityIds}
+                    </span>
+                  )} 
+              </div>
+            </label>
           </div>
 
           <button
             type="button"
             className=" cursor-pointer w-full py-2 text-white font-semibold bg-gradient-to-r from-black to-black hover:from-gray-900 hover:to-gray-900 shadow-md hover:shadow-lg transition-all duration-200"
+            onClick={() => submitHandler()}
           >
             Add Property
           </button>
