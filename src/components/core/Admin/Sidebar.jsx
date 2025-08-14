@@ -38,7 +38,6 @@ const Sidebar = () => {
   ];
 
   const [isLogoutOpen, setIsLogoutOpen] = React.useState(false);
-  // const [activeItem, setActiveItem] = React.useState("Dashboard");
 
   const path = useLocation().pathname;
  

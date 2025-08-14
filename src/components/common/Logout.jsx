@@ -1,7 +1,14 @@
 import React from "react";
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
+import { logout } from "../../Services/authAPI";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 
 const Logout = ({close}) => {
+
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   return (
     <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg p-6 w-80 shadow-lg">
@@ -23,7 +30,7 @@ const Logout = ({close}) => {
               Cancel
             </button>
             <button
-              onClick={""}
+              onClick={() => logout(navigate, dispatch)}
               className="px-4 py-2 rounded-lg hover:bg-[#5C5F9D] bg-[#2E3192] text-white transition-colors"
             >
               Logout

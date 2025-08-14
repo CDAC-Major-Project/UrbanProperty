@@ -178,9 +178,9 @@ const EditProperty = ({ data, close }) => {
 
   const editPropertyHandler = async () => {
     try{
-        await propertySchema.validate({...formData, image: data?.images?.length !== 0 ?  : }, { abortEarly: false });
+        await propertySchema.validate({...formData, image: data?.images?.length !== 0 ? "" : ""}, { abortEarly: false });
     }catch(err){
-
+      console.log("Error at editing the property : ", err);
     }
   };
 

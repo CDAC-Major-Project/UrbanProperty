@@ -26,75 +26,88 @@ import TaskAltOutlinedIcon from "@mui/icons-material/TaskAltOutlined";
 import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined";
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import ManageAccountsOutlinedIcon from "@mui/icons-material/ManageAccountsOutlined";
+import { useSelector } from "react-redux";
+import { getBuyerSellerBarChart } from "../../../Services/adminAPI";
 
 const Analytics = () => {
-  const response = {
-    totalUsers: 1234,
-    monthlyData: [
-      {
-        month: "JAN",
-        sellerCount: 150,
-        buyerCount: 450,
-      },
-      {
-        month: "FEB",
-        sellerCount: 165,
-        buyerCount: 480,
-      },
-      {
-        month: "MAR",
-        sellerCount: 180,
-        buyerCount: 520,
-      },
-      {
-        month: "APR",
-        sellerCount: 210,
-        buyerCount: 560,
-      },
-      {
-        month: "MAY",
-        sellerCount: 200,
-        buyerCount: 540,
-      },
-      {
-        month: "JUN",
-        sellerCount: 225,
-        buyerCount: 600,
-      },
-      {
-        month: "JUL",
-        sellerCount: 240,
-        buyerCount: 630,
-      },
-      {
-        month: "AUG",
-        sellerCount: 230,
-        buyerCount: 610,
-      },
-      {
-        month: "SEP",
-        sellerCount: 255,
-        buyerCount: 680,
-      },
-      {
-        month: "OCT",
-        sellerCount: 270,
-        buyerCount: 720,
-      },
-      {
-        month: "NOV",
-        sellerCount: 265,
-        buyerCount: 700,
-      },
-      {
-        month: "DEC",
-        sellerCount: 300,
-        buyerCount: 800,
-      },
-    ],
-  };
 
-  const data = response?.monthlyData;
+  const {token} = useSelector((state) => state.auth);
+
+  const [totalUser, setTotalUser] = React.useState(0);
+  const [data, setData] = React.useState([]);
+
+  console.log("data : ", data);
+  React.useEffect(() => {
+    getBuyerSellerBarChart(token, setData, setTotalUser);
+  }, []);
+
+  // const response = {
+  //   totalUsers: 1234,
+  //   monthlyData: [
+  //     {
+  //       month: "JAN",
+  //       sellerCount: 150,
+  //       buyerCount: 450,
+  //     },
+  //     {
+  //       month: "FEB",
+  //       sellerCount: 165,
+  //       buyerCount: 480,
+  //     },
+  //     {
+  //       month: "MAR",
+  //       sellerCount: 180,
+  //       buyerCount: 520,
+  //     },
+  //     {
+  //       month: "APR",
+  //       sellerCount: 210,
+  //       buyerCount: 560,
+  //     },
+  //     {
+  //       month: "MAY",
+  //       sellerCount: 200,
+  //       buyerCount: 540,
+  //     },
+  //     {
+  //       month: "JUN",
+  //       sellerCount: 225,
+  //       buyerCount: 600,
+  //     },
+  //     {
+  //       month: "JUL",
+  //       sellerCount: 240,
+  //       buyerCount: 630,
+  //     },
+  //     {
+  //       month: "AUG",
+  //       sellerCount: 230,
+  //       buyerCount: 610,
+  //     },
+  //     {
+  //       month: "SEP",
+  //       sellerCount: 255,
+  //       buyerCount: 680,
+  //     },
+  //     {
+  //       month: "OCT",
+  //       sellerCount: 270,
+  //       buyerCount: 720,
+  //     },
+  //     {
+  //       month: "NOV",
+  //       sellerCount: 265,
+  //       buyerCount: 700,
+  //     },
+  //     {
+  //       month: "DEC",
+  //       sellerCount: 300,
+  //       buyerCount: 800,
+  //     },
+  //   ],
+  // };
+
+  // const data = response?.monthlyData;
 
   const PieData = [
     {
@@ -177,7 +190,7 @@ const Analytics = () => {
           {/* total count */}
           <p className="text-4xl font-extrabold text-[#2E3192] ">
             {" "}
-            <CountUp duration={5} end={response?.totalUsers} />
+            <CountUp duration={5} end={totalUser} />
           </p>
         </div>
 
@@ -237,12 +250,12 @@ const Analytics = () => {
             <Tooltip />
             <Legend />
             <Bar
-              dataKey="sellerCount"
+              dataKey="Seller"
               fill="#8884d8"
               activeBar={<Rectangle fill="pink" stroke="blue" />}
             />
             <Bar
-              dataKey="buyerCount"
+              dataKey="Buyer"
               fill="#82ca9d"
               activeBar={<Rectangle fill="gold" stroke="purple" />}
             />
