@@ -6,9 +6,11 @@ import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import LocalHotelOutlinedIcon from "@mui/icons-material/LocalHotelOutlined";
 import BathtubOutlinedIcon from "@mui/icons-material/BathtubOutlined";
 import MapOutlinedIcon from "@mui/icons-material/MapOutlined";
-import { useParams } from 'react-router-dom';
-import { getPropertyById } from '../Services/propertiesAPI';
+import { useNavigate, useParams } from 'react-router-dom';
+import { getPropertyById, buyProperty } from '../Services/propertiesAPI';
 import coverPhoto from '../assets/Images/defaultimage .jpeg';
+import { useSelector } from 'react-redux';
+import toast from 'react-hot-toast';
 
 
 const PropertyDetails = () => {
@@ -17,11 +19,27 @@ const PropertyDetails = () => {
 
     const [propertyDetail, setPropertyDetail] = React.useState(null);
     
+    const {token} = useSelector((state) => state.auth);
+    const navigate = useNavigate();
+
   React.useEffect(() => {
     if(id !== null){
         getPropertyById(id, setPropertyDetail);
     }
   }, [id])
+
+  const buyHandler = async () => {
+    try{
+        if(token == null){
+            toast.error("Login first");
+            navigate("/login");
+        }else{
+            await buyProperty(token, propertyDetail?.id);
+        }
+    }catch(err){
+        console.log("error at buyHandler : ", err);
+    }
+  }
 
   return (
     <div className='w-full h-min-screen bg-[#F9FAFB] ' >
@@ -95,7 +113,8 @@ const PropertyDetails = () => {
                         variant='contained' 
                         color="success" 
                         size='large'
-                        sx={{fontWeight:800, padding: "5px 0px", fontSize: "1.2rem", width:"100%"}}    
+                        sx={{fontWeight:800, padding: "5px 0px", fontSize: "1.2rem", width:"100%"}}   
+                        onClick={() => buyHandler()}
                     >
                         <span className='text-xl' >Buy This Property</span>
                     </Button>

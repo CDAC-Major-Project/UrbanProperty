@@ -84,7 +84,7 @@ export const getMyProperties = async (id, token) => {
     if (response?.status !== 200) {
       throw new Error("Something went wront in fetching My properties");
     }
-  
+
     array = response?.data;
     toast.success("Fetched Properties");
   } catch (err) {
@@ -97,7 +97,7 @@ export const getMyProperties = async (id, token) => {
 
 // get all property type
 export const getAllPropertyType = async (token, setPropertyType) => {
-  try{
+  try {
     const response = await axios.get(`${baseURL}/property-types`, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -107,44 +107,50 @@ export const getAllPropertyType = async (token, setPropertyType) => {
 
     if (response?.status !== 200) {
       throw new Error("Something went wront in fetching property type");
-    }    
+    }
 
     setPropertyType(response?.data);
-  }catch(err){
-    console.log("Error : ", err)
+  } catch (err) {
+    console.log("Error : ", err);
   }
-} 
+};
 
 // get all amenities
 export const getAllAmenities = async (token, setAmenities) => {
-  try{
+  try {
     const response = await axios.get(`${baseURL}/amenities`, {
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "Application/json",
       },
-    })
+    });
 
     if (response?.status !== 200) {
       throw new Error("Something went wront in fetching Amenities");
-    }  
+    }
     setAmenities(response?.data);
-  }catch(err){
-    console.log("Error : ", err)
+  } catch (err) {
+    console.log("Error : ", err);
   }
-}
+};
 
 // list property
-export const listProperty = async (form, token, setFormData, obj, setPropertyImages, setPreviewImages) => {
-  const loading = toast.loading("Loading...")
-  try{
-    const response = await axios.post(`${baseURL}/properties`, form,{
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "multipart/form-data",
-        },
-      
-    })
+export const listProperty = async (
+  form,
+  token,
+  setFormData,
+  obj,
+  setPropertyImages,
+  setPreviewImages
+) => {
+  const loading = toast.loading("Loading...");
+  try {
+    const response = await axios.post(`${baseURL}/properties`, form, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "multipart/form-data",
+      },
+    });
 
     if (response?.status !== 201) {
       throw new Error("Something went wront in listing property");
@@ -155,8 +161,86 @@ export const listProperty = async (form, token, setFormData, obj, setPropertyIma
     setFormData(obj);
     setPropertyImages(null);
     setPreviewImages(null);
-  }catch(err){
+  } catch (err) {
     toast.error("Could not list property");
+    console.log("Error:", err);
+  }
+  toast.dismiss(loading);
+};
+
+// Razorpay Payment
+function loadScript(src) {
+  return new Promise((resolve) => {
+    const script = document.createElement("script");
+    script.src = src;
+
+    script.onload = () => {
+      resolve(true);
+    };
+
+    script.onerror = () => {
+      resolve(false);
+    };
+
+    document.body.appendChild(script);
+  });
+}
+
+export const buyProperty = async (token, propertyId) => {
+  const toastId = toast.loading("Loading...");
+  try {
+    // load the script
+    const res = await loadScript(
+      "https://checkout.razorpay.com/v1/checkout.js"
+    );
+
+    if (!res) {
+      toast.error("RazorPay SDK failed to load");
+      return;
+    }
+
+    // initiate the order
+    const orderResponse = await axios.post(
+      "http://localhost:5000/api/v1/payment/create-order",
+      propertyId,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    console.log("response --->", orderResponse);
+
+    if (orderResponse?.data?.success === false) {
+      throw new Error("Something went wrong in Razorpay order creation");
+    }
+  } catch (err) {
+    console.log("PAYMENT API ERROR", err);
+    toast.error("Could not make Payment");
+  }
+  toast.dismiss(toastId);
+};
+
+export const editProperty = async (token, propertyId, form, close) => {
+  const loading = toast.loading("Loading...");
+  try{
+    const response = axios.put(`${baseURL}/properties/${propertyId}`, form, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "multipart/form-data",
+      },
+    })
+    console.log("resp : ", response["PromiseResult"]?.data);
+    
+    if (response?.data?.status !== 200) {
+      throw new Error("Something went wront in Editing property");
+    }
+
+    toast.success("Property Edited Successfully");
+    close(null);
+  }catch(err){
+    toast.error("Could not edit property");
     console.log("Error:", err);
   }
   toast.dismiss(loading);

@@ -28,8 +28,13 @@ import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import ManageAccountsOutlinedIcon from "@mui/icons-material/ManageAccountsOutlined";
 import { useSelector } from "react-redux";
 import { getBuyerSellerBarChart } from "../../../Services/adminAPI";
+import { useNavigate } from "react-router-dom";
+import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
+import WifiOutlinedIcon from '@mui/icons-material/WifiOutlined';
 
 const Analytics = () => {
+
+  const navigate = useNavigate();
 
   const {token} = useSelector((state) => state.auth);
 
@@ -322,7 +327,10 @@ const Analytics = () => {
             </div>
 
             {/* button */}
-            <button className=" cursor-pointer flex items-center space-x-2 border border-gray-300 rounded-lg py-1 px-5 ">
+            <button 
+              onClick={() => navigate("/admin/property-verification")}
+              className=" cursor-pointer flex items-center space-x-2 border border-gray-300 rounded-lg py-1 px-5 "
+            >
               <RemoveRedEyeOutlinedIcon fontSize="small" />
               <p>Review Now</p>
             </button>
@@ -345,9 +353,36 @@ const Analytics = () => {
             </div>
 
             {/* button */}
-            <button className=" cursor-pointer flex items-center space-x-2 border border-gray-300 rounded-lg py-1 px-5 ">
+            <button 
+              onClick={() => navigate("/admin/property-type")}
+              className=" cursor-pointer flex items-center space-x-2 border border-gray-300 rounded-lg py-1 px-5 "
+            >
               <SettingsOutlinedIcon fontSize="small" />
               <p>Manage Types</p>
+            </button>
+          </div>
+
+          {/* Amenity */}
+          <div className="border-2 border-gray-300 bg-white rounded-2xl shadow-gray-300 shadow-lg p-5 w-full flex items-center justify-between ">
+            {/* Icon and Heading */}
+            <div className="flex items-center space-x-3">
+              <HomeOutlinedIcon
+                sx={{ color: "#00C49F" }}
+                fontSize="large"
+              />
+              <div>
+                <h3 className="font-semibold">Amenities</h3>
+                <p className="text-sm text-gray-600">1,234 total Amenities</p>
+              </div>
+            </div>
+
+            {/* button */}
+            <button 
+              onClick={() => navigate("/admin/amenities")}
+              className=" cursor-pointer flex items-center space-x-2 border border-gray-300 rounded-lg py-1 px-5 "
+            >
+              <WifiOutlinedIcon fontSize="small" />
+              <p>Manage Amenities</p>
             </button>
           </div>
 
@@ -366,7 +401,10 @@ const Analytics = () => {
             </div>
 
             {/* button */}
-            <button className=" cursor-pointer flex items-center space-x-2 border border-gray-300 rounded-lg py-1 px-5 ">
+            <button 
+              onClick={() => navigate("/admin/users")}
+              className=" cursor-pointer flex items-center space-x-2 border border-gray-300 rounded-lg py-1 px-5 "
+            >
               <ManageAccountsOutlinedIcon fontSize="small" />
               <p>Manage Users</p>
             </button>

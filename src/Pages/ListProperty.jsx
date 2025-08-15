@@ -156,7 +156,7 @@ const ListProperty = () => {
 
       const form = new FormData();
       form.append("image", propertyImages);
-      form.append("propertyData", JSON.stringify({...formData, sellerId: userDetails?.id}));
+      form.append("propertyData", JSON.stringify(formData));
 
       await listProperty(form, token, setFormData, obj, setPropertyImages, setPreviewImages);
     } catch (err) {

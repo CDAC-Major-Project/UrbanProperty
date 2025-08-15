@@ -15,6 +15,7 @@ import * as yup from "yup";
 import CloseIcon from "@mui/icons-material/Close";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 import { useRef } from "react";
+import {editProperty} from "../../../Services/propertiesAPI"
 
 const stateOptions = [
   "Andhra Pradesh",
@@ -49,7 +50,7 @@ const stateOptions = [
 
 const EditProperty = ({ data, close }) => {
   const obj = {
-    id:data?.id,
+    id: data?.id,
     sellerId: data?.seller?.id,
     title: data?.title,
     description: data?.description,
@@ -76,7 +77,7 @@ const EditProperty = ({ data, close }) => {
   const [errors, setErrors] = React.useState(null);
 
   console.log("formData : ", formData);
-  console.log("data", data)
+  console.log("data", data);
 
   const photoRef = React.useRef(null);
   const [propertyImages, setPropertyImages] = React.useState(null);
@@ -107,9 +108,11 @@ const EditProperty = ({ data, close }) => {
   const editPopUpRef = useRef(null);
 
   const closeOnClickOutSide = (e) => {
-
-    if(e.target.closest(".MuiPaper-root") || e.target.closest(".MuiAutocomplete-popper")){
-        return;
+    if (
+      e.target.closest(".MuiPaper-root") ||
+      e.target.closest(".MuiAutocomplete-popper")
+    ) {
+      return;
     }
 
     if (editPopUpRef.current && !editPopUpRef.current.contains(e.target)) {
@@ -129,58 +132,75 @@ const EditProperty = ({ data, close }) => {
   }, []);
 
   // validation
-    const propertySchema = yup.object().shape({
-      image: yup.mixed().required("Image is required"),
-      title: yup.string().required("Title is required"),
-      description: yup.string().required("Description is required"),
-      address: yup.string().required("Address is required"),
-      city: yup.string().required("City is required"),
-      state: yup.string().required("State is required"),
-      zipCode: yup.number().required("Zipcode is required"),
-      startingPrice: yup
+  const propertySchema = yup.object().shape({
+    image: yup.mixed().required("Image is required"),
+    title: yup.string().required("Title is required"),
+    description: yup.string().required("Description is required"),
+    address: yup.string().required("Address is required"),
+    city: yup.string().required("City is required"),
+    state: yup.string().required("State is required"),
+    zipCode: yup.number().required("Zipcode is required"),
+    startingPrice: yup
+      .number()
+      .typeError("Price must be a number")
+      .min(500, "Minimum price is 500")
+      .max(100000000, "Maximum price is 10 crore")
+      .required("Price is required"),
+    propertyTypeId: yup
+      .number()
+      .typeError("Select property type")
+      .required("Property type is required"),
+    amenityIds: yup
+      .array()
+      .of(yup.number())
+      .min(1, "Select at least one amenity"),
+    details: yup.object().shape({
+      numBedrooms: yup
         .number()
-        .typeError("Price must be a number")
-        .min(500, "Minimum price is 500")
-        .max(100000000, "Maximum price is 10 crore")
-        .required("Price is required"),
-      propertyTypeId: yup
+        .typeError("Enter number of bedrooms")
+        .min(1, "At least 1 bedroom")
+        .required("Number of bedrooms is required"),
+      numBathrooms: yup
         .number()
-        .typeError("Select property type")
-        .required("Property type is required"),
-      amenityIds: yup
-        .array()
-        .of(yup.number())
-        .min(1, "Select at least one amenity"),
-      details: yup.object().shape({
-        numBedrooms: yup
-          .number()
-          .typeError("Enter number of bedrooms")
-          .min(1, "At least 1 bedroom")
-          .required("Number of bedrooms is required"),
-        numBathrooms: yup
-          .number()
-          .typeError("Enter number of bathrooms")
-          .min(1, "At least 1 bathroom")
-          .required("Number of bathrooms is required"),
-        sizeSqft: yup
-          .number()
-          .typeError("Enter size in sqft")
-          .min(100, "Minimum size is 100 sqft")
-          .required("Size is required"),
-        buildYear: yup
-          .number()
-          .typeError("Enter build year")
-          .min(1800, "Year must be after 1800")
-          .max(new Date().getFullYear(), "Year cannot be in the future")
-          .required("Build year is required"),
-      }),
-    });
+        .typeError("Enter number of bathrooms")
+        .min(1, "At least 1 bathroom")
+        .required("Number of bathrooms is required"),
+      sizeSqft: yup
+        .number()
+        .typeError("Enter size in sqft")
+        .min(100, "Minimum size is 100 sqft")
+        .required("Size is required"),
+      buildYear: yup
+        .number()
+        .typeError("Enter build year")
+        .min(1800, "Year must be after 1800")
+        .max(new Date().getFullYear(), "Year cannot be in the future")
+        .required("Build year is required"),
+    }),
+  });
 
   const editPropertyHandler = async () => {
-    try{
-        await propertySchema.validate({...formData, image: data?.images?.length !== 0 ? "" : ""}, { abortEarly: false });
-    }catch(err){
+    try {
+      await propertySchema.validate(
+        {
+          ...formData,
+          image: data?.images?.length !== 0 ? previewImages : propertyImages,
+        },
+        { abortEarly: false }
+      );
+
+      const form = new FormData();
+      form.append("image", propertyImages !== null ? propertyImages : previewImages);
+      form.append("propertyData", JSON.stringify(formData));
+
+      await editProperty(token, formData?.id, form, close)
+    } catch (err) {
       console.log("Error at editing the property : ", err);
+      const errors = {};
+      err.inner.forEach((err) => {
+        errors[err.path] = err.message;
+      });
+      setErrors(errors);
     }
   };
 

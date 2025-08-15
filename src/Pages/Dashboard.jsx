@@ -106,7 +106,7 @@ export default function Dashboard() {
                         />
                       </div>
                       <div className="col-span-4  flex flex-col justify-center -gap-10 ">
-                        <div className="flex items-center gap-5 ">
+                        <div className="flex items-start gap-5 ">
                           <h3 className="text-2xl font-semibold max-w-150 ">
                             {property.title}
                           </h3>
