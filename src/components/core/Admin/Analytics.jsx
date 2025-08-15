@@ -27,10 +27,11 @@ import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined";
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import ManageAccountsOutlinedIcon from "@mui/icons-material/ManageAccountsOutlined";
 import { useSelector } from "react-redux";
-import { getBuyerSellerBarChart } from "../../../Services/adminAPI";
+import { getBuyerSellerBarChart, getMonthlyListedProperty, getPropertyStatus } from "../../../Services/adminAPI";
 import { useNavigate } from "react-router-dom";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import WifiOutlinedIcon from '@mui/icons-material/WifiOutlined';
+import toast from "react-hot-toast";
 
 const Analytics = () => {
 
@@ -38,149 +39,46 @@ const Analytics = () => {
 
   const {token} = useSelector((state) => state.auth);
 
+  const [monthlyListedProperty, setMonthlyListedProperty] = React.useState([]);
   const [totalUser, setTotalUser] = React.useState(0);
   const [data, setData] = React.useState([]);
+  const [propertyStatus, setPropertyStatus] = React.useState({});
 
-  console.log("data : ", data);
+  console.log("propertyStatus : ", propertyStatus);
+
+  const monthOrder = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
+
+  const lineChart = monthOrder?.map((monthName) => (
+    {
+      month: monthName,
+      listing: monthlyListedProperty[monthName]
+    }
+  ));
+
   React.useEffect(() => {
-    getBuyerSellerBarChart(token, setData, setTotalUser);
+    const fetchAnalyticsData = async () => {
+      const loading = toast.loading("Loading...");
+      try{
+        await getBuyerSellerBarChart(token, setData, setTotalUser);
+        await getMonthlyListedProperty(token, setMonthlyListedProperty);
+        await getPropertyStatus(token, setPropertyStatus);
+        toast.success("Successfully Fetched Analytics Data");
+      }catch(err){
+        console.log("Error in fetching Analytics Data", err);
+      }
+      toast.dismiss(loading);
+    }
+    fetchAnalyticsData();
   }, []);
 
-  // const response = {
-  //   totalUsers: 1234,
-  //   monthlyData: [
-  //     {
-  //       month: "JAN",
-  //       sellerCount: 150,
-  //       buyerCount: 450,
-  //     },
-  //     {
-  //       month: "FEB",
-  //       sellerCount: 165,
-  //       buyerCount: 480,
-  //     },
-  //     {
-  //       month: "MAR",
-  //       sellerCount: 180,
-  //       buyerCount: 520,
-  //     },
-  //     {
-  //       month: "APR",
-  //       sellerCount: 210,
-  //       buyerCount: 560,
-  //     },
-  //     {
-  //       month: "MAY",
-  //       sellerCount: 200,
-  //       buyerCount: 540,
-  //     },
-  //     {
-  //       month: "JUN",
-  //       sellerCount: 225,
-  //       buyerCount: 600,
-  //     },
-  //     {
-  //       month: "JUL",
-  //       sellerCount: 240,
-  //       buyerCount: 630,
-  //     },
-  //     {
-  //       month: "AUG",
-  //       sellerCount: 230,
-  //       buyerCount: 610,
-  //     },
-  //     {
-  //       month: "SEP",
-  //       sellerCount: 255,
-  //       buyerCount: 680,
-  //     },
-  //     {
-  //       month: "OCT",
-  //       sellerCount: 270,
-  //       buyerCount: 720,
-  //     },
-  //     {
-  //       month: "NOV",
-  //       sellerCount: 265,
-  //       buyerCount: 700,
-  //     },
-  //     {
-  //       month: "DEC",
-  //       sellerCount: 300,
-  //       buyerCount: 800,
-  //     },
-  //   ],
-  // };
+  const statusLable = ["ACTIVE", "PENDING", "REJECTED", "SOLD"];
 
-  // const data = response?.monthlyData;
-
-  const PieData = [
-    {
-      name: "Verified",
-      value: 234,
-    },
-    {
-      name: "Pending",
-      value: 89,
-    },
-    {
-      name: "Rejected",
-      value: 45,
-    },
-  ];
+  const PieData = statusLable?.map((lableName) => ({
+    name: lableName,
+    value: propertyStatus[lableName],
+  }))
 
   const PieColors = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
-
-  const lineChart = [
-    {
-      month: "JAN",
-      listing: 150,
-    },
-    {
-      month: "FEB",
-      listing: 165,
-    },
-    {
-      month: "MAR",
-      listing: 180,
-    },
-    {
-      month: "APR",
-      listing: 210,
-    },
-    {
-      month: "MAY",
-      listing: 200,
-    },
-    {
-      month: "JUN",
-      listing: 225,
-    },
-    {
-      month: "JUL",
-      listing: 240,
-    },
-    {
-      month: "AUG",
-      listing: 230,
-    },
-    {
-      month: "SEP",
-      listing: 255,
-    },
-    {
-      month: "OCT",
-      listing: 270,
-    },
-    {
-      month: "NOV",
-      listing: 265,
-    },
-    {
-      month: "DEC",
-      listing: 300,
-    },
-  ];
 
   return (
     <div className="space-y-10 my-10 ">
@@ -211,7 +109,7 @@ const Analytics = () => {
 
           {/* total Listings */}
           <p className="text-4xl font-extrabold text-[#2E3192] ">
-            <CountUp duration={5} end={3546} />
+            <CountUp duration={5} end={propertyStatus?.ACTIVE} />
           </p>
         </div>
 
@@ -225,7 +123,7 @@ const Analytics = () => {
             />
           </div>
           <p className="text-4xl font-extrabold text-[#2E3192] ">
-            <CountUp duration={5} end={567} />
+            <CountUp duration={5} end={propertyStatus?.PENDING} />
           </p>
         </div>
       </div>

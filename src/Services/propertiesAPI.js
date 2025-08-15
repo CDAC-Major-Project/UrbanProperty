@@ -225,15 +225,14 @@ export const buyProperty = async (token, propertyId) => {
 export const editProperty = async (token, propertyId, form, close) => {
   const loading = toast.loading("Loading...");
   try{
-    const response = axios.put(`${baseURL}/properties/${propertyId}`, form, {
+    const response = await axios.put(`${baseURL}/properties/${propertyId}`, form, {
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "multipart/form-data",
       },
     })
-    console.log("resp : ", response["PromiseResult"]?.data);
-    
-    if (response?.data?.status !== 200) {
+ 
+    if (response?.status !== 200) {
       throw new Error("Something went wront in Editing property");
     }
 
