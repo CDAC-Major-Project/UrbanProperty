@@ -10,6 +10,8 @@ import defaultImage from "../assets/Images/defaultHouseImage.jpeg";
 import CircularProgress from "@mui/material/CircularProgress";
 import { setSavedBuyerProperties } from "../slices/PropertiesSlice";
 import { getMyProperties } from "../Services/propertiesAPI";
+import EditProperty from "../components/core/Seller_Property/EditProperty";
+
 
 export default function Dashboard() {
   const location = useLocation().pathname;
@@ -19,6 +21,7 @@ export default function Dashboard() {
   const [displayProperties, setDisplayProperties] = React.useState([]);
   const { token, userDetails } = useSelector((state) => state.auth);
 
+  const [editProperty, setEditProperty] = React.useState(null);
   React.useEffect(() => {
     const fetchData = async () => {
       if (userDetails?.role === "BUYER") {
@@ -104,7 +107,7 @@ export default function Dashboard() {
                         />
                       </div>
                       <div className="col-span-4  flex flex-col justify-center -gap-10 ">
-                        <div className="flex items-center gap-5 ">
+                        <div className="flex items-start gap-5 ">
                           <h3 className="text-2xl font-semibold max-w-150 ">
                             {property.title}
                           </h3>
@@ -134,6 +137,7 @@ export default function Dashboard() {
                             variant="outlined"
                             size="medium"
                             className="flex gap-2 items-center bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 shadow-md hover:shadow-lg transition-all duration-200 "
+                            onClick={() => setEditProperty(property)}
                           >
                             <span className="text-white font-semibold ">
                               Edit
@@ -158,23 +162,13 @@ export default function Dashboard() {
                 )}
               </div>
             </div>
-
-            {/* <button
-              type="button"
-              className=" cursor-pointer w-full py-2 text-white font-semibold rounded-xl bg-black hover:bg-[#181818] shadow-md hover:shadow-lg transition-all duration-200 "
-              onClick={() => {
-                if (userDetails?.role === "BUYER") {
-                  navigate("/properties/saved");
-                }
-              }}
-            >
-              {location === "/dashboard/seller"
-                ? "View All Properties"
-                : "View All Saved Properties"}
-            </button> */}
           </div>
         </div>
       </div>
+
+      {
+        editProperty && <EditProperty data={editProperty} close={setEditProperty} />
+      }
     </div>
   );
 }

@@ -26,143 +26,63 @@ import TaskAltOutlinedIcon from "@mui/icons-material/TaskAltOutlined";
 import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined";
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import ManageAccountsOutlinedIcon from "@mui/icons-material/ManageAccountsOutlined";
+import { useSelector } from "react-redux";
+import { getBuyerSellerBarChart, getMonthlyListedProperty, getPropertyStatus } from "../../../Services/adminAPI";
+import { useNavigate } from "react-router-dom";
+import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
+import WifiOutlinedIcon from '@mui/icons-material/WifiOutlined';
+import toast from "react-hot-toast";
 
 const Analytics = () => {
-  const response = {
-    totalUsers: 1234,
-    monthlyData: [
-      {
-        month: "JAN",
-        sellerCount: 150,
-        buyerCount: 450,
-      },
-      {
-        month: "FEB",
-        sellerCount: 165,
-        buyerCount: 480,
-      },
-      {
-        month: "MAR",
-        sellerCount: 180,
-        buyerCount: 520,
-      },
-      {
-        month: "APR",
-        sellerCount: 210,
-        buyerCount: 560,
-      },
-      {
-        month: "MAY",
-        sellerCount: 200,
-        buyerCount: 540,
-      },
-      {
-        month: "JUN",
-        sellerCount: 225,
-        buyerCount: 600,
-      },
-      {
-        month: "JUL",
-        sellerCount: 240,
-        buyerCount: 630,
-      },
-      {
-        month: "AUG",
-        sellerCount: 230,
-        buyerCount: 610,
-      },
-      {
-        month: "SEP",
-        sellerCount: 255,
-        buyerCount: 680,
-      },
-      {
-        month: "OCT",
-        sellerCount: 270,
-        buyerCount: 720,
-      },
-      {
-        month: "NOV",
-        sellerCount: 265,
-        buyerCount: 700,
-      },
-      {
-        month: "DEC",
-        sellerCount: 300,
-        buyerCount: 800,
-      },
-    ],
-  };
 
-  const data = response?.monthlyData;
+  const navigate = useNavigate();
 
-  const PieData = [
+  const {token} = useSelector((state) => state.auth);
+
+  const [monthlyListedProperty, setMonthlyListedProperty] = React.useState([]);
+  const [totalUser, setTotalUser] = React.useState(0);
+  const [data, setData] = React.useState([]);
+  const [propertyStatus, setPropertyStatus] = React.useState({});
+
+  console.log("propertyStatus : ", propertyStatus);
+
+  const monthOrder = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
+
+  const lineChart = monthOrder?.map((monthName) => (
     {
-      name: "Verified",
-      value: 234,
-    },
-    {
-      name: "Pending",
-      value: 89,
-    },
-    {
-      name: "Rejected",
-      value: 45,
-    },
-  ];
+      month: monthName,
+      listing: monthlyListedProperty[monthName]
+    }
+  ));
+
+  React.useEffect(() => {
+    const fetchAnalyticsData = async () => {
+      const loading = toast.loading("Loading...");
+      try{
+        const errorBuyerSellerCount = await getBuyerSellerBarChart(token, setData, setTotalUser);
+        const errorMonthlyListedProperty = await getMonthlyListedProperty(token, setMonthlyListedProperty);
+        const errorPropertyStatus = await getPropertyStatus(token, setPropertyStatus);
+        
+        if(errorBuyerSellerCount || errorMonthlyListedProperty || errorPropertyStatus){
+          throw errorBuyerSellerCount || errorMonthlyListedProperty || errorPropertyStatus;
+        }        
+        toast.success("Successfully Fetched Analytics Data");
+      }catch(err){
+        console.log("Error in fetching Analytics Data", err);
+      }
+      toast.dismiss(loading);
+    }
+    fetchAnalyticsData();
+  }, []);
+
+  const statusLable = ["ACTIVE", "PENDING", "REJECTED", "SOLD"];
+
+  const PieData = statusLable?.map((lableName) => ({
+    name: lableName,
+    value: propertyStatus[lableName],
+  }))
 
   const PieColors = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
-
-  const lineChart = [
-    {
-      month: "JAN",
-      listing: 150,
-    },
-    {
-      month: "FEB",
-      listing: 165,
-    },
-    {
-      month: "MAR",
-      listing: 180,
-    },
-    {
-      month: "APR",
-      listing: 210,
-    },
-    {
-      month: "MAY",
-      listing: 200,
-    },
-    {
-      month: "JUN",
-      listing: 225,
-    },
-    {
-      month: "JUL",
-      listing: 240,
-    },
-    {
-      month: "AUG",
-      listing: 230,
-    },
-    {
-      month: "SEP",
-      listing: 255,
-    },
-    {
-      month: "OCT",
-      listing: 270,
-    },
-    {
-      month: "NOV",
-      listing: 265,
-    },
-    {
-      month: "DEC",
-      listing: 300,
-    },
-  ];
 
   return (
     <div className="space-y-10 my-10 ">
@@ -177,7 +97,7 @@ const Analytics = () => {
           {/* total count */}
           <p className="text-4xl font-extrabold text-[#2E3192] ">
             {" "}
-            <CountUp duration={5} end={response?.totalUsers} />
+            <CountUp duration={5} end={totalUser} />
           </p>
         </div>
 
@@ -193,7 +113,7 @@ const Analytics = () => {
 
           {/* total Listings */}
           <p className="text-4xl font-extrabold text-[#2E3192] ">
-            <CountUp duration={5} end={3546} />
+            <CountUp duration={5} end={propertyStatus?.ACTIVE} />
           </p>
         </div>
 
@@ -207,7 +127,7 @@ const Analytics = () => {
             />
           </div>
           <p className="text-4xl font-extrabold text-[#2E3192] ">
-            <CountUp duration={5} end={567} />
+            <CountUp duration={5} end={propertyStatus?.PENDING} />
           </p>
         </div>
       </div>
@@ -237,12 +157,12 @@ const Analytics = () => {
             <Tooltip />
             <Legend />
             <Bar
-              dataKey="sellerCount"
+              dataKey="Seller"
               fill="#8884d8"
               activeBar={<Rectangle fill="pink" stroke="blue" />}
             />
             <Bar
-              dataKey="buyerCount"
+              dataKey="Buyer"
               fill="#82ca9d"
               activeBar={<Rectangle fill="gold" stroke="purple" />}
             />
@@ -309,7 +229,10 @@ const Analytics = () => {
             </div>
 
             {/* button */}
-            <button className=" cursor-pointer flex items-center space-x-2 border border-gray-300 rounded-lg py-1 px-5 ">
+            <button 
+              onClick={() => navigate("/admin/property-verification")}
+              className=" cursor-pointer flex items-center space-x-2 border border-gray-300 rounded-lg py-1 px-5 "
+            >
               <RemoveRedEyeOutlinedIcon fontSize="small" />
               <p>Review Now</p>
             </button>
@@ -332,9 +255,36 @@ const Analytics = () => {
             </div>
 
             {/* button */}
-            <button className=" cursor-pointer flex items-center space-x-2 border border-gray-300 rounded-lg py-1 px-5 ">
+            <button 
+              onClick={() => navigate("/admin/property-type")}
+              className=" cursor-pointer flex items-center space-x-2 border border-gray-300 rounded-lg py-1 px-5 "
+            >
               <SettingsOutlinedIcon fontSize="small" />
               <p>Manage Types</p>
+            </button>
+          </div>
+
+          {/* Amenity */}
+          <div className="border-2 border-gray-300 bg-white rounded-2xl shadow-gray-300 shadow-lg p-5 w-full flex items-center justify-between ">
+            {/* Icon and Heading */}
+            <div className="flex items-center space-x-3">
+              <HomeOutlinedIcon
+                sx={{ color: "#00C49F" }}
+                fontSize="large"
+              />
+              <div>
+                <h3 className="font-semibold">Amenities</h3>
+                <p className="text-sm text-gray-600">1,234 total Amenities</p>
+              </div>
+            </div>
+
+            {/* button */}
+            <button 
+              onClick={() => navigate("/admin/amenities")}
+              className=" cursor-pointer flex items-center space-x-2 border border-gray-300 rounded-lg py-1 px-5 "
+            >
+              <WifiOutlinedIcon fontSize="small" />
+              <p>Manage Amenities</p>
             </button>
           </div>
 
@@ -353,7 +303,10 @@ const Analytics = () => {
             </div>
 
             {/* button */}
-            <button className=" cursor-pointer flex items-center space-x-2 border border-gray-300 rounded-lg py-1 px-5 ">
+            <button 
+              onClick={() => navigate("/admin/users")}
+              className=" cursor-pointer flex items-center space-x-2 border border-gray-300 rounded-lg py-1 px-5 "
+            >
               <ManageAccountsOutlinedIcon fontSize="small" />
               <p>Manage Users</p>
             </button>
