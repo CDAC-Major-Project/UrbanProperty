@@ -59,9 +59,13 @@ const Analytics = () => {
     const fetchAnalyticsData = async () => {
       const loading = toast.loading("Loading...");
       try{
-        await getBuyerSellerBarChart(token, setData, setTotalUser);
-        await getMonthlyListedProperty(token, setMonthlyListedProperty);
-        await getPropertyStatus(token, setPropertyStatus);
+        const errorBuyerSellerCount = await getBuyerSellerBarChart(token, setData, setTotalUser);
+        const errorMonthlyListedProperty = await getMonthlyListedProperty(token, setMonthlyListedProperty);
+        const errorPropertyStatus = await getPropertyStatus(token, setPropertyStatus);
+        
+        if(errorBuyerSellerCount || errorMonthlyListedProperty || errorPropertyStatus){
+          throw errorBuyerSellerCount || errorMonthlyListedProperty || errorPropertyStatus;
+        }        
         toast.success("Successfully Fetched Analytics Data");
       }catch(err){
         console.log("Error in fetching Analytics Data", err);
