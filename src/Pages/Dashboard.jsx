@@ -12,6 +12,7 @@ import { setSavedBuyerProperties } from "../slices/PropertiesSlice";
 import { getMyProperties } from "../Services/propertiesAPI";
 import EditProperty from "../components/core/Seller_Property/EditProperty";
 
+
 export default function Dashboard() {
   const location = useLocation().pathname;
   const navigate = useNavigate();

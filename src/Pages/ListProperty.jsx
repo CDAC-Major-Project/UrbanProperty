@@ -74,7 +74,7 @@ const ListProperty = () => {
   const photoRef = React.useRef(null);
   const [propertyImages, setPropertyImages] = React.useState(null);
   const [previewImages, setPreviewImages] = React.useState(null);
-  
+
   const previewImage = (e) => {
     if (e?.target?.files && e?.target?.files[0]) {
       const file = e?.target?.files[0];
@@ -157,7 +157,6 @@ const ListProperty = () => {
       const form = new FormData();
       form.append("image", propertyImages);
       form.append("propertyData", JSON.stringify(formData));
-
       await listProperty(form, token, setFormData, obj, setPropertyImages, setPreviewImages);
     } catch (err) {
       console.log("Error at submitting the formData : ", err);

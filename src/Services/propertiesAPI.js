@@ -118,6 +118,7 @@ export const getAllPropertyType = async (token, setPropertyType) => {
 // get all amenities
 export const getAllAmenities = async (token, setAmenities) => {
   try {
+
     const response = await axios.get(`${baseURL}/amenities`, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -151,7 +152,6 @@ export const listProperty = async (
         "Content-Type": "multipart/form-data",
       },
     });
-
     if (response?.status !== 201) {
       throw new Error("Something went wront in listing property");
     }

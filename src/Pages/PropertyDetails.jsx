@@ -13,12 +13,12 @@ import { useSelector } from 'react-redux';
 import toast from 'react-hot-toast';
 
 
+
 const PropertyDetails = () => {
 
   const {id} = useParams();
 
-    const [propertyDetail, setPropertyDetail] = React.useState(null);
-    
+    const [propertyDetail, setPropertyDetail] = React.useState(null);    
     const {token} = useSelector((state) => state.auth);
     const navigate = useNavigate();
 
